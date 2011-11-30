@@ -13,10 +13,10 @@ require 'json/pure'
 
 module CFRuntime
   module Test
-    
+
     SOME_SERVER = '172.30.48.73'
     SOME_PORT = 56789
-    
+
     def with_vcap_application
       vcap_app = {"instance_id"=>"#{secure_uuid}",
         "instance_index"=>0,
@@ -39,7 +39,7 @@ module CFRuntime
       ENV['VCAP_SERVICES'] = JSON services
       yield
     end
-    
+
     # this is in commons.rb - could require this maybe?
     def secure_uuid
       result = File.open('/dev/urandom') { |x| x.read(16).unpack('H*')[0] }
@@ -52,17 +52,50 @@ module CFRuntime
     def redis_version
       "2.2"
     end
-    
+
+    def rabbit_version
+      "2.4"
+    end
+
     def create_mongo_service(name)
       vcap_svc = create_service(name, "mongodb", mongo_version)
       vcap_svc["credentials"]["db"] = "db"
       vcap_svc
     end
-    
+
     def create_redis_service(name)
       create_service(name, "redis", redis_version)
     end
-    
+
+    def create_rabbit_service(name, vhost=nil)
+      {"name"=>"#{name}",
+      "label"=>"rabbitmq-#{rabbit_version}",
+      "plan"=>"free",
+      "tags"=>["rabbitmq","rabbitmq-#{rabbit_version}"],
+      "credentials"=>{
+        "hostname"=>"#{SOME_SERVER}",
+        "port"=>25046,
+        "user"=>"#{secure_uuid}",
+        "pass"=>"#{secure_uuid}",
+        "vhost"=>"#{vhost}"}
+      }
+    end
+
+    def create_rabbit_srs_service(name, vhost=nil)
+      if vhost
+        url = "amqp://#{secure_uuid}:#{secure_uuid}@#{SOME_SERVER}:25046/#{vhost}"
+      else
+        url = "amqp://#{secure_uuid}:#{secure_uuid}@#{SOME_SERVER}:25046"
+      end
+      {"name"=>"#{name}",
+      "label"=>"rabbitmq-#{rabbit_version}",
+      "plan"=>"free",
+      "tags"=>["rabbitmq","rabbitmq-#{rabbit_version}"],
+      "credentials"=>{
+        "url"=>url}
+    }
+    end
+
     def create_service(name, type, version)
       {"name"=>"#{name}",
       "label"=>"#{type}-#{version}",
@@ -75,7 +108,7 @@ module CFRuntime
         "username"=>"#{secure_uuid}",
         "password"=>"#{secure_uuid}",
         "name"=>"#{secure_uuid}"}
-      }      
+      }
     end
   end
 end

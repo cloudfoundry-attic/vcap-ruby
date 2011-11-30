@@ -19,7 +19,7 @@ describe 'A CloudApp' do
       CFRuntime::CloudApp.running_in_cloud?.should == true
     end
   end
-  
+
   it 'works with a service' do
     svcs = {"mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
     with_vcap_services(svcs) do
@@ -50,7 +50,7 @@ describe 'A CloudApp' do
 
   it 'works with services of different types' do
     svcs = {
-      "redis-#{redis_version}"=>[create_redis_service('redis-test')], 
+      "redis-#{redis_version}"=>[create_redis_service('redis-test')],
       "mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
     with_vcap_services(svcs) do
       load 'cfruntime/properties.rb'
@@ -58,6 +58,48 @@ describe 'A CloudApp' do
       CFRuntime::CloudApp.service_props('redis').should_not == nil
       CFRuntime::CloudApp.service_props('mongo-test')[:name].should == "mongo-test"
       CFRuntime::CloudApp.service_props('redis-test')[:name].should == "redis-test"
+    end
+  end
+
+  it 'works with rabbitmq service (old format)' do
+    svcs = {"rabbitmq-#{rabbit_version}"=>[create_rabbit_service('rabbit-test','testvhost')]}
+    with_vcap_services(svcs) do
+      load 'cfruntime/properties.rb'
+      CFRuntime::CloudApp.service_props('rabbitmq').should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:name].should == "rabbit-test"
+      CFRuntime::CloudApp.service_props('rabbit-test')[:host].should == SOME_SERVER
+      CFRuntime::CloudApp.service_props('rabbit-test')[:port].should == 25046
+      CFRuntime::CloudApp.service_props('rabbit-test')[:username].should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:password].should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:vhost].should == "testvhost"
+    end
+  end
+
+  it 'works with rabbitmq service (new format)' do
+    svcs = {"rabbitmq-#{rabbit_version}"=>[create_rabbit_srs_service('rabbit-test','testvhost')]}
+    with_vcap_services(svcs) do
+      load 'cfruntime/properties.rb'
+      CFRuntime::CloudApp.service_props('rabbitmq').should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:name].should == "rabbit-test"
+      CFRuntime::CloudApp.service_props('rabbit-test')[:host].should == SOME_SERVER
+      CFRuntime::CloudApp.service_props('rabbit-test')[:port].should == 25046
+      CFRuntime::CloudApp.service_props('rabbit-test')[:username].should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:password].should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:vhost].should == "testvhost"
+    end
+  end
+
+  it 'works with rabbitmq service without vhost (new format)' do
+    svcs = {"rabbitmq-#{rabbit_version}"=>[create_rabbit_srs_service('rabbit-test')]}
+    with_vcap_services(svcs) do
+      load 'cfruntime/properties.rb'
+      CFRuntime::CloudApp.service_props('rabbitmq').should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:name].should == "rabbit-test"
+      CFRuntime::CloudApp.service_props('rabbit-test')[:host].should == SOME_SERVER
+      CFRuntime::CloudApp.service_props('rabbit-test')[:port].should == 25046
+      CFRuntime::CloudApp.service_props('rabbit-test')[:username].should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:password].should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:vhost].should == '/'
     end
   end
 
