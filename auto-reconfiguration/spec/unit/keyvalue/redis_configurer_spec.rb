@@ -8,6 +8,7 @@ describe 'AutoReconfiguration::Redis' do
     ENV['VCAP_SERVICES'] = '{"redis-2.2":[{"name": "redis-1","label": "redis-2.2",' +
       '"plan": "free", "credentials": {"node_id": "redis_node_8","hostname": ' +
       '"10.20.30.40","port": 1234,"password": "mypass","name": "r1"}}]}'
+    ENV['DISABLE_AUTO_CONFIG'] = nil
     load 'cfruntime/properties.rb'
   end
 
@@ -37,6 +38,18 @@ describe 'AutoReconfiguration::Redis' do
     redis.client.port.should ==  6321
     redis.client.password.should == 'mypw'
   end
+
+  it 'does not open Redis class to apply methods twice' do
+    load 'cfautoconfig/keyvalue/redis_configurer.rb'
+    #This would blow up massively (stack trace too deep) if we
+    #aliased initialize twice
+    redis = Redis.new(:host => '127.0.0.1',
+                                   :port => '6321',
+                                   :password => 'mypw')
+    redis.client.host.should == '10.20.30.40'
+    redis.client.port.should ==  1234
+    redis.client.password.should == 'mypass'
+   end
 
   it 'disables Redis auto-reconfig if DISABLE_AUTO_CONFIG includes redis' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:mongodb"
