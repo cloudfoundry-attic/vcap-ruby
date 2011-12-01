@@ -18,6 +18,7 @@ spec = Gem::Specification.new do |s|
 
   s.add_development_dependency "redis",     "~> 2.0"
   s.add_development_dependency "amqp",     "~> 0.8.3"
+  s.add_development_dependency "carrot",   "~> 1.0"
   s.add_development_dependency "rake",      "~> 0.9.2"
   s.add_development_dependency "rcov",      "~> 0.9.10"
   s.add_development_dependency "rspec",     "~> 2.6.0"
