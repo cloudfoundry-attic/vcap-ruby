@@ -1,4 +1,4 @@
-File.join(File.dirname(__FILE__), '../../','spec_helper')
+require File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'amqp'
 require 'cfautoconfig/messaging/amqp_configurer'
 
