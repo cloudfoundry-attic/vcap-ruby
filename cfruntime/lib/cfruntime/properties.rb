@@ -42,6 +42,7 @@ module CFRuntime
                 raise ArgumentError.new("multiple segments in path of amqp URI: #{uri}") if $1.index('/')
                 vhost = URI.unescape($1)
               end
+              serviceopts[:url] = cred['url']
             else
               # The "old" credentials format
               user,passwd,host,port,vhost = %w(user pass hostname port vhost).map {|key|
