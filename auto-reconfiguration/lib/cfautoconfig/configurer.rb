@@ -24,6 +24,7 @@ end
 if CFRuntime::CloudApp.service_props('rabbitmq')
   puts "Loading RabbitMQ auto-reconfiguration."
   require 'cfautoconfig/messaging/amqp_configurer'
+  require 'cfautoconfig/messaging/carrot_configurer'
 else
   puts "No RabbitMQ service bound to app.  Skipping auto-reconfiguration."
 end
