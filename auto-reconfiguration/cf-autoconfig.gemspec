@@ -13,11 +13,11 @@ spec = Gem::Specification.new do |s|
 
   s.platform = Gem::Platform::RUBY
   #s.extra_rdoc_files = ["README.md", "LICENSE"]
-  
+
   s.add_dependency "cf-runtime"
 
-  # TODO pick the lowest version of redis we support
   s.add_development_dependency "redis",     "~> 2.0"
+  s.add_development_dependency "amqp",     "~> 0.8"
   s.add_development_dependency "rake",      "~> 0.9.2"
   s.add_development_dependency "rcov",      "~> 0.9.10"
   s.add_development_dependency "rspec",     "~> 2.6.0"
