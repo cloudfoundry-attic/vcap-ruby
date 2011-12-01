@@ -20,3 +20,10 @@ if CFRuntime::CloudApp.service_props('mysql')
 else
   puts "No MySQL service bound to app.  Skipping auto-reconfiguration."
 end
+
+if CFRuntime::CloudApp.service_props('rabbitmq')
+  puts "Loading RabbitMQ auto-reconfiguration."
+  require 'cfautoconfig/messaging/amqp_configurer'
+else
+  puts "No RabbitMQ service bound to app.  Skipping auto-reconfiguration."
+end
