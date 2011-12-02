@@ -17,6 +17,14 @@ module CFRuntime
     SOME_SERVER = '172.30.48.73'
     SOME_PORT = 56789
 
+    def self.host
+      SOME_SERVER
+    end
+
+    def self.port
+      "#{SOME_PORT}"
+    end
+
     def with_vcap_application
       vcap_app = {"instance_id"=>"#{secure_uuid}",
         "instance_index"=>0,
@@ -31,6 +39,8 @@ module CFRuntime
         "limits"=>{"fds"=>256,"mem"=>134217728,"disk"=>2147483648},
         "host"=>"#{SOME_SERVER}"}
       ENV['VCAP_APPLICATION'] = JSON vcap_app
+      ENV['VCAP_APP_HOST'] = SOME_SERVER
+      ENV['VCAP_APP_PORT'] = "#{SOME_PORT}"
       yield
     end
 

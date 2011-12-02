@@ -1,6 +1,7 @@
 require File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'amqp'
 require 'cfautoconfig/messaging/amqp_configurer'
+require 'cfruntime/properties.rb'
 
 describe 'AutoReconfiguration::AMQP' do
 
@@ -8,7 +9,6 @@ describe 'AutoReconfiguration::AMQP' do
     ENV['VCAP_SERVICES'] = '{"rabbitmq-2.4":[{"name": "rabbit-1","label": "rabbitmq-2.4",' +
       '"plan": "free", "credentials": {"url": "amqp://username:password@10.20.30.40:12345/virtualHost"}}]}'
     ENV['DISABLE_AUTO_CONFIG'] = nil
-    load 'cfruntime/properties.rb'
     @mock_connection = mock("connection")
   end
 
