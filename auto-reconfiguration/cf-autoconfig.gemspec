@@ -18,6 +18,7 @@ spec = Gem::Specification.new do |s|
 
   # TODO pick the lowest version of redis we support
   s.add_development_dependency "redis",     "~> 2.0"
+  s.add_development_dependency "mongo",     "~> 1.5.1"
   s.add_development_dependency "rake",      "~> 0.9.2"
   s.add_development_dependency "rcov",      "~> 0.9.10"
   s.add_development_dependency "rspec",     "~> 2.6.0"
