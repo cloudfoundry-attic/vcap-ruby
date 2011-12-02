@@ -8,11 +8,11 @@ module AutoReconfiguration
       base.send( :alias_method, :initialize, :initialize_with_cf )
       base.send( :alias_method, :original_db, :db)
       base.send( :alias_method, :db, :db_with_cf )
+      base.send( :alias_method, :original_shortcut, :[])
+      base.send( :alias_method, :[], :shortcut_with_cf )
     end
      
     def initialize_with_cf(host = nil, port = nil, opts = {})
-      #TODO why do I need a load here if I have require?
-      #load 'cfruntime/properties.rb'
       @service_props = CFRuntime::CloudApp.service_props('mongodb')
       if @service_props.nil?
         puts "No MongoDB service bound to app.  Skipping auto-reconfiguration."
@@ -28,19 +28,28 @@ module AutoReconfiguration
     end
      
     def db_with_cf(db_name, opts = {}) 
-      if @auto_config
-        mongo_db = @service_props[:db]
-        db = original_db mongo_db, opts
-        mongo_username = @service_props[:username]
-        mongo_password = @service_props[:password]
-        db.authenticate mongo_username, mongo_password
-        db
+      if @auto_config && db_name != 'admin'
+        db = original_db @service_props[:db], opts
+        authenticate_with_cf(db)
       else
         original_db db_name, opts
       end
     end
+
+    def shortcut_with_cf(db_name)
+      if @auto_config && db_name != 'admin'
+        db = original_shortcut(@service_props[:db])
+        authenticate_with_cf(db)
+      else
+        db = original_shortcut(db_name)
+      end
+    end
+
+    def authenticate_with_cf(db)
+      mongo_username = @service_props[:username]
+      mongo_password = @service_props[:password]
+      db.authenticate mongo_username, mongo_password
+      db
+    end
   end
 end
-
-
-
