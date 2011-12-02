@@ -1,6 +1,7 @@
 require File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'redis'
 require 'cfautoconfig/keyvalue/redis_configurer'
+require 'cfruntime/properties.rb'
 
 describe 'AutoReconfiguration::Redis' do
 
@@ -9,7 +10,9 @@ describe 'AutoReconfiguration::Redis' do
       '"plan": "free", "credentials": {"node_id": "redis_node_8","hostname": ' +
       '"10.20.30.40","port": 1234,"password": "mypass","name": "r1"}}]}'
     ENV['DISABLE_AUTO_CONFIG'] = nil
-    load 'cfruntime/properties.rb'
+    if CFRuntime::CloudApp.send(:instance_variable_get, '@svcs')
+      CFRuntime::CloudApp.send(:remove_instance_variable, '@svcs')
+    end
   end
 
   it 'auto-configures Redis on initialize with host and port' do
@@ -30,7 +33,6 @@ describe 'AutoReconfiguration::Redis' do
 
   it 'does not auto-configure Redis if VCAP_SERVICES not set' do
     ENV['VCAP_SERVICES'] = nil
-    load 'cfruntime/properties.rb'
     redis = Redis.new(:host => '127.0.0.1',
                                  :port => '6321',
                                  :password => 'mypw')
