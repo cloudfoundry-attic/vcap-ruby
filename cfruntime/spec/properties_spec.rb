@@ -20,6 +20,15 @@ describe 'CFRuntime::CloudApp' do
     end
   end
 
+  it 'exposes host and port in the cloud' do
+    with_vcap_application do
+      load 'cfruntime/properties.rb'
+      CFRuntime::CloudApp.running_in_cloud?.should == true
+      CFRuntime::CloudApp.host.should == CFRuntime::Test.host
+      CFRuntime::CloudApp.port.should == CFRuntime::Test.port
+    end
+  end
+
   it 'works with a service' do
     svcs = {"mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
     with_vcap_services(svcs) do
@@ -58,6 +67,15 @@ describe 'CFRuntime::CloudApp' do
       CFRuntime::CloudApp.service_props('redis').should_not == nil
       CFRuntime::CloudApp.service_props('mongo-test')[:name].should == "mongo-test"
       CFRuntime::CloudApp.service_props('redis-test')[:name].should == "redis-test"
+    end
+  end
+
+  it 'works with a mongo service and exposes db name' do
+    svcs = {"mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
+    with_vcap_services(svcs) do
+      load 'cfruntime/properties.rb'
+      mongo_svc = CFRuntime::CloudApp.service_props('mongodb')
+      mongo_svc[:db].should == "db"
     end
   end
 
