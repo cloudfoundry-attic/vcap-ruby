@@ -7,20 +7,18 @@ module CFRuntime
 
   class CloudApp
 
-    @@app = ENV['VCAP_APPLICATION']
-    @@host = ENV['VCAP_APP_HOST']
-    @@port = ENV['VCAP_APP_PORT']
-    @@svcs = {}
-    @@svc_names = []
+    @app = ENV['VCAP_APPLICATION']
+    @host = ENV['VCAP_APP_HOST']
+    @port = ENV['VCAP_APP_PORT']
+    @service_names = []
+    @svcs = {}
 
-    vcapsvcs = ENV['VCAP_SERVICES']
-
-    if vcapsvcs
+    if ENV['VCAP_SERVICES']
       svcs = JSON.parse(ENV['VCAP_SERVICES'])
       svcs.each do |key,list|
-        count = list.count
-        label = key[0..key.index('-')-1]
-        version = key[key.index('-')+1..key.length]
+        label, version = key.split('-')
+        # label = key[0..key.index('-')-1]
+        # version = key[key.index('-')+1..key.length]
         list.each do |svc|
           name = svc["name"]
           serviceopts = {}
@@ -61,39 +59,27 @@ module CFRuntime
           serviceopts[:password] = passwd
           serviceopts[:host] = host
           serviceopts[:port] = port
-          @@svcs[name] = serviceopts
-          @@svc_names << name
-          if count == 1
-            @@svcs[label] = serviceopts
+          @svcs[name] = serviceopts
+          @service_names << name
+          if list.count == 1
+            @svcs[label] = serviceopts
           end
         end
       end
     end
 
-    def self.service_names()
-      @@svc_names
-    end
-
-    def self.service_props(name)
-      @@svcs[name]
-    end
-
-    def self.host()
-      @@host
-    end
-
-    def self.port()
-      @@port
-    end
-
-    def self.running_in_cloud?()
-      if @@app == nil
-        false
-      else
-        true
+    class << self
+      def running_in_cloud?()
+        ! @app.nil?
       end
+      
+      def service_props(name)
+        @svcs[name]
+      end
+      
+      attr_reader :host, :port, :service_names
     end
-
+    
   end
 
 end
