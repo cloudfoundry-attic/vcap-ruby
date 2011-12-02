@@ -21,6 +21,7 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency "rake",      "~> 0.9.2"
   s.add_development_dependency "rcov",      "~> 0.9.10"
   s.add_development_dependency "rspec",     "~> 2.6.0"
+  s.add_development_dependency "ci_reporter", "~> 1.6.5"
 
   s.require_path = 'lib'
   #s.files = %w(LICENSE README.md) + Dir.glob("{lib}/**/*")

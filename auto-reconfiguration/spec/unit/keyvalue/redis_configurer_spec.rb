@@ -1,4 +1,4 @@
-require 'spec_helper'
+require File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'redis'
 require 'cfautoconfig/keyvalue/redis_configurer'
 

@@ -3,7 +3,7 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'cfruntime/properties.rb'
 
-describe 'A CloudApp' do
+describe 'CFRuntime::CloudApp' do
   include CFRuntime::Test
 
   before do
