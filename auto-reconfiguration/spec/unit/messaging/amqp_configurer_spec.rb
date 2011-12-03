@@ -70,7 +70,7 @@ def attempt_amqp_connect(connection_options_or_string)
   conn_error = ''
   begin
     EventMachine.run do
-      connection = AMQP.connect(connection_options_or_string)
+      connection = AMQP.connect(connection_options_or_string,:timeout=>1)
     end
   rescue Exception=>e
     conn_error = e.message
