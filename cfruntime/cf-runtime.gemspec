@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = s.summary = "Cloud Foundry Runtime Library"
 
   s.platform = Gem::Platform::RUBY
-  s.extra_rdoc_files = ["README.md", "LICENSE"]
+  s.extra_rdoc_files = ["LICENSE"]
 
   s.add_dependency "json_pure", "~> 1.6.1"
 
@@ -22,5 +22,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ci_reporter", "~> 1.6.5"
 
   s.require_path = 'lib'
-  s.files = %w(LICENSE README.md) + Dir.glob("{lib}/**/*")
+  s.files = %w(LICENSE) + Dir.glob("{lib}/**/*")
 end
