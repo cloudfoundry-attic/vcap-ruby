@@ -21,6 +21,13 @@ else
   puts "No MySQL service bound to app.  Skipping auto-reconfiguration."
 end
 
+if CFRuntime::CloudApp.service_props('postgresql')
+  puts "Loading PostgreSQL auto-reconfiguration."
+  require 'cfautoconfig/relational/postgres_configurer'
+else
+  puts "No PostgreSQL service bound to app.  Skipping auto-reconfiguration."
+end
+
 if CFRuntime::CloudApp.service_props('rabbitmq')
   puts "Loading RabbitMQ auto-reconfiguration."
   require 'cfautoconfig/messaging/amqp_configurer'
