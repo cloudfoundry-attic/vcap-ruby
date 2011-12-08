@@ -2,7 +2,7 @@
 
 module CFRuntime
 
-  require 'json/pure'
+  require 'crack/json'
   require 'uri'
 
   class CloudApp
@@ -16,7 +16,7 @@ module CFRuntime
     vcapsvcs = ENV['VCAP_SERVICES']
 
     if vcapsvcs
-      svcs = JSON.parse(ENV['VCAP_SERVICES'])
+      svcs = Crack::JSON.parse(ENV['VCAP_SERVICES'])
       svcs.each do |key,list|
         count = list.count
         label = key[0..key.index('-')-1]
