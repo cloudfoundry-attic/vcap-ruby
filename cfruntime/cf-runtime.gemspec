@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["LICENSE"]
 
-  s.add_dependency "json_pure", "~> 1.6.1"
+  s.add_dependency "crack", "~> 0.3.1"
 
   s.add_development_dependency "rake",      "~> 0.9.2"
   s.add_development_dependency "rcov",      "~> 0.9.10"
