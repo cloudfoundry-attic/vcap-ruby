@@ -16,6 +16,7 @@ module CFRuntime
 
     SOME_SERVER = '172.30.48.73'
     SOME_PORT = 56789
+    SOME_SERVICE_PORT = 25046
 
     def with_vcap_application
       vcap_app = {"instance_id"=>"#{secure_uuid}",
@@ -57,14 +58,28 @@ module CFRuntime
       "2.4"
     end
 
+    def mysql_version
+      "0.3.11"
+    end
+
     def create_mongo_service(name)
       vcap_svc = create_service(name, "mongodb", mongo_version)
       vcap_svc["credentials"]["db"] = "db"
+      vcap_svc["credentials"]["username"] = "testuser"
+      vcap_svc["credentials"]["password"] = "testpw"
       vcap_svc
     end
 
     def create_redis_service(name)
       create_service(name, "redis", redis_version)
+    end
+
+    def create_mysql_service(name)
+      vcap_svc = create_service(name, "mysql", mysql_version)
+      vcap_svc["credentials"]["name"] = "mysqldatabase"
+      vcap_svc["credentials"]["username"] = "testuser"
+      vcap_svc["credentials"]["password"] = "testpw"
+      vcap_svc
     end
 
     def create_rabbit_service(name, vhost=nil)
@@ -74,7 +89,7 @@ module CFRuntime
       "tags"=>["rabbitmq","rabbitmq-#{rabbit_version}"],
       "credentials"=>{
         "hostname"=>"#{SOME_SERVER}",
-        "port"=>25046,
+        "port"=>SOME_SERVICE_PORT,
         "user"=>"#{secure_uuid}",
         "pass"=>"#{secure_uuid}",
         "vhost"=>"#{vhost}"}
@@ -83,9 +98,9 @@ module CFRuntime
 
     def create_rabbit_srs_service(name, vhost=nil)
       if vhost
-        url = "amqp://#{secure_uuid}:#{secure_uuid}@#{SOME_SERVER}:25046/#{vhost}"
+        url = "amqp://rabbituser:rabbitpass@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/#{vhost}"
       else
-        url = "amqp://#{secure_uuid}:#{secure_uuid}@#{SOME_SERVER}:25046"
+        url = "amqp://rabbituser:rabbitpass@#{SOME_SERVER}:#{SOME_SERVICE_PORT}"
       end
       {"name"=>"#{name}",
       "label"=>"rabbitmq-#{rabbit_version}",
@@ -104,7 +119,7 @@ module CFRuntime
       "credentials"=>{
         "hostname"=>"#{SOME_SERVER}",
         "host"=>"#{SOME_SERVER}",
-        "port"=>25046,
+        "port"=> SOME_SERVICE_PORT,
         "username"=>"#{secure_uuid}",
         "password"=>"#{secure_uuid}",
         "name"=>"#{secure_uuid}"}

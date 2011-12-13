@@ -1,4 +1,5 @@
 require 'cfruntime/properties'
+require 'cfruntime/amqp'
 
 module AutoReconfiguration
    module AMQP
@@ -26,12 +27,8 @@ module AutoReconfiguration
              #If user passed in a URL and we have a URL for service, use it
              original_connect(service_props[:url], other_options, &block)
            else
-             cfoptions[:host] = service_props[:host]
-             cfoptions[:port] = service_props[:port]
-             cfoptions[:user] = service_props[:username]
-             cfoptions[:pass] = service_props[:password]
-             cfoptions[:vhost] = service_props[:vhost]
-             original_connect(cfoptions, other_options, &block)
+             original_connect(CFRuntime::AMQPClient.merge_options(cfoptions,service_props),
+               other_options, &block)
            end
         end
      end

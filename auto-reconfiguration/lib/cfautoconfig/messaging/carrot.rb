@@ -1,4 +1,5 @@
 require 'cfruntime/properties'
+require 'cfruntime/carrot'
 
 module AutoReconfiguration
    module Carrot
@@ -14,12 +15,7 @@ module AutoReconfiguration
           original_initialize opts
         else
           puts "Auto-reconfiguring Carrot."
-          cfoptions = opts
-          cfoptions[:host] = service_props[:host]
-          cfoptions[:port] = service_props[:port]
-          cfoptions[:user] = service_props[:username]
-          cfoptions[:pass] = service_props[:password]
-          cfoptions[:vhost] = service_props[:vhost]
+          opts = CFRuntime::CarrotClient.merge_options(opts,service_props)
           original_initialize opts
         end
      end

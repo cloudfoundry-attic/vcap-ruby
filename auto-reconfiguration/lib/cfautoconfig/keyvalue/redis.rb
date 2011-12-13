@@ -1,4 +1,5 @@
 require 'cfruntime/properties'
+require 'cfruntime/redis'
 
 module AutoReconfiguration
    module Redis
@@ -14,14 +15,7 @@ module AutoReconfiguration
          original_initialize options
        else
          puts "Auto-reconfiguring Redis."
-         cfoptions = options
-         if !cfoptions[:path].nil?
-           #Host and port are ignored if a path is specified
-           cfoptions[:path] = "#{service_props[:host]}:#{service_props[:port]}"
-         end
-         cfoptions[:host] = service_props[:host]
-         cfoptions[:port] = service_props[:port]
-         cfoptions[:password] = service_props[:password]
+         cfoptions = CFRuntime::RedisClient.merge_options(options,service_props)
          original_initialize cfoptions
        end
      end
