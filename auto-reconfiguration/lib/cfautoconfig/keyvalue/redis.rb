@@ -1,29 +1,24 @@
 require 'cfruntime/properties'
+require 'cfruntime/redis'
 
 module AutoReconfiguration
-   module Redis
-     def self.included( base )
-       base.send( :alias_method, :original_initialize, :initialize)
-       base.send( :alias_method, :initialize, :initialize_with_cf )
-     end
+  SUPPORTED_REDIS_VERSION = '2.0'
+  module Redis
+    def self.included( base )
+      base.send( :alias_method, :original_initialize, :initialize)
+      base.send( :alias_method, :initialize, :initialize_with_cf )
+    end
 
-     def initialize_with_cf(options = {})
-       service_props = CFRuntime::CloudApp.service_props('redis')
-       if(service_props.nil?)
-         puts "No Redis service bound to app.  Skipping auto-reconfiguration."
-         original_initialize options
-       else
-         puts "Auto-reconfiguring Redis."
-         cfoptions = options
-         if !cfoptions[:path].nil?
-           #Host and port are ignored if a path is specified
-           cfoptions[:path] = "#{service_props[:host]}:#{service_props[:port]}"
-         end
-         cfoptions[:host] = service_props[:host]
-         cfoptions[:port] = service_props[:port]
-         cfoptions[:password] = service_props[:password]
-         original_initialize cfoptions
-       end
-     end
-   end
+    def initialize_with_cf(options = {})
+      service_names = CFRuntime::CloudApp.service_names_of_type('redis')
+      if service_names.length == 1
+        puts "Auto-reconfiguring Redis."
+        cfoptions = CFRuntime::RedisClient.options_for_svc(service_names[0],options)
+        original_initialize cfoptions
+      else
+        puts "Found #{service_names.length} redis services. Skipping auto-reconfiguration."
+        original_initialize options
+      end
+    end
+  end
 end

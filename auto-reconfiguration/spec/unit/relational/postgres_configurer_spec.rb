@@ -9,7 +9,6 @@ describe 'AutoReconfiguration::Postgres' do
       '"plan": "free", "credentials": { "node_id": "postgresql_node_4","hostname": "10.20.30.40",' +
       '"port": 8552,"password": "svcpw","name": "svcdb","username": "svcuser"}}]}'
     ENV['DISABLE_AUTO_CONFIG'] = nil
-    load 'cfruntime/properties.rb'
   end
 
   it 'auto-configures PGConn.open with Array arguments' do
@@ -48,18 +47,28 @@ describe 'AutoReconfiguration::Postgres' do
   end
 
   it 'auto-configures PGConn.connect' do
-     expected_conn_string= attempt_pg_connect('localhost','5689', {:foo=>'bar'},nil,'testdb','testuser','testpw',:connect_timeout=>1)
-     expected_conn_string.should == "connect_timeout='1' host='10.20.30.40' port='8552' options='{:foo=>\"bar\"}' dbname='svcdb' user='svcuser' password='svcpw'"
+    expected_conn_string= attempt_pg_connect('localhost','5689', {:foo=>'bar'},nil,'testdb','testuser','testpw',:connect_timeout=>1)
+    expected_conn_string.should == "connect_timeout='1' host='10.20.30.40' port='8552' options='{:foo=>\"bar\"}' dbname='svcdb' user='svcuser' password='svcpw'"
    end
 
-   it 'auto-configures PGConn.connect_start' do
-      expected_conn_string= attempt_pg_connect_start('localhost','5689', {:foo=>'bar'},nil,'testdb','testuser','testpw',:connect_timeout=>1)
-      expected_conn_string.should == "connect_timeout='1' host='10.20.30.40' port='8552' options='{:foo=>\"bar\"}' dbname='svcdb' user='svcuser' password='svcpw'"
-    end
+  it 'auto-configures PGConn.connect_start' do
+    expected_conn_string= attempt_pg_connect_start('localhost','5689', {:foo=>'bar'},nil,'testdb','testuser','testpw',:connect_timeout=>1)
+    expected_conn_string.should == "connect_timeout='1' host='10.20.30.40' port='8552' options='{:foo=>\"bar\"}' dbname='svcdb' user='svcuser' password='svcpw'"
+  end
 
   it 'does not auto-configure PGConn.open if VCAP_SERVICES not set' do
     ENV['VCAP_SERVICES'] = nil
-    load 'cfruntime/properties.rb'
+    expected_conn_string=attempt_pg_open("host=localhost port=8552 user=testuser connect_timeout=1")
+    expected_conn_string.should == ""
+  end
+
+  it 'does not auto-configure PGConn.open if multiple postgres services found' do
+    ENV['VCAP_SERVICES'] = '{"postgresql-9.0":[{"name": "postgres-1","label": "postgresql-9.0",' +
+      '"plan": "free", "credentials": { "node_id": "postgresql_node_4","hostname": "10.20.30.40",' +
+      '"port": 8552,"password": "svcpw","name": "svcdb","username": "svcuser"}},' +
+      '{"name": "postgres-2","label": "postgresql-9.0",' +
+      '"plan": "free", "credentials": { "node_id": "postgresql_node_4","hostname": "10.20.30.40",' +
+      '"port": 8552,"password": "svcpw","name": "svcdb","username": "svcuser"}}]}'
     expected_conn_string=attempt_pg_open("host=localhost port=8552 user=testuser connect_timeout=1")
     expected_conn_string.should == ""
   end

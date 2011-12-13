@@ -98,8 +98,43 @@ describe 'AutoReconfiguration::Mongo' do
     mongo.host_to_try.should == mongo.send(:format_pair, '127.0.0.1', 27017)
   end
 
+  it 'does not auto-configure Mongo if multiple mongo services found' do
+    ENV['VCAP_SERVICES'] = '{"mongodb-1.8":[{"name": "mongo-1","label": "mongodb-1.8",' +
+      '"plan": "free", "credentials": {"hostname": "10.20.30.40","port": 12345, ' +
+      '"username": "8d93ae0a", "password": "7cf3c0e3","name": "m1", "db": "db"}},' +
+      '{"name": "mongo-2","label": "mongodb-1.8",' +
+      '"plan": "free", "credentials": {"hostname": "10.20.30.40","port": 12345, ' +
+      '"username": "8d93ae0a", "password": "7cf3c0e3","name": "m1", "db": "db"}}]}'
+    mongo = Mongo::Connection.new('127.0.0.1', 27017, {:connect => false})
+    mongo.host_to_try.should == mongo.send(:format_pair, '127.0.0.1', 27017)
+  end
+
   it 'does not auto-configure DB if VCAP_SERVICES not set' do
     ENV['VCAP_SERVICES'] = nil
+    module Mongo
+      module Support
+        def validate_db_name(db_name)
+          db_name.should == 'test'
+          db_name
+        end
+      end
+      class DB
+        def authenticate(username, password, save_auth=true)
+          raise(Mongo::AuthenticationError, "Authenticate should not have been called!")
+        end
+      end
+    end
+    mongo = Mongo::Connection.new('127.0.0.1', 27017, {:connect => false})
+    db = mongo.db('test')
+  end
+
+  it 'does not auto-configure DB if multiple mongo services found' do
+    ENV['VCAP_SERVICES'] = '{"mongodb-1.8":[{"name": "mongo-1","label": "mongodb-1.8",' +
+      '"plan": "free", "credentials": {"hostname": "10.20.30.40","port": 12345, ' +
+      '"username": "8d93ae0a", "password": "7cf3c0e3","name": "m1", "db": "db"}},' +
+      '{"name": "mongo-2","label": "mongodb-1.8",' +
+      '"plan": "free", "credentials": {"hostname": "10.20.30.40","port": 12345, ' +
+      '"username": "8d93ae0a", "password": "7cf3c0e3","name": "m1", "db": "db"}}]}'
     module Mongo
       module Support
         def validate_db_name(db_name)

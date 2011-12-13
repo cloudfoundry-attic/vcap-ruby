@@ -58,6 +58,28 @@ describe 'AutoReconfiguration::Mysql' do
     db = Mysql2::Client.new(@dbopts)
   end
 
+  it 'does not auto-configure Mysql if multiple mysql services are found' do
+     ENV['VCAP_SERVICES'] = '{"mysql-5.1":[{"name": "mysql-1","label": "mysql-5.1",' +
+        '"plan": "free", "credentials": { "hostname": "10.20.30.40",' +
+        '"port": 1234,"name": "cfdb","user": "cfuser","username": "cfuser","password": "cfpasswd"}},'+
+        '{"name": "mysql-2","label": "mysql-5.1",' +
+        '"plan": "free", "credentials": { "hostname": "10.20.30.40",' +
+        '"port": 1234,"name": "cfdb","user": "cfuser","username": "cfuser","password": "cfpasswd"}}]}'
+    module Mysql2
+      class Client
+        def connect user, pass, host, port, database, socket, flags
+          user.should == 'user'
+          pass.should == 'passwd'
+          host.should == 'localhost'
+          port.should == 3306
+          database.should == 'test'
+        end
+      end
+    end
+    db = Mysql2::Client.new(@dbopts)
+  end
+
+
   it 'disables Mysql auto-reconfig if DISABLE_AUTO_CONFIG includes mysql' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:mysql:mongodb"
     load 'cfautoconfig/relational/mysql_configurer.rb'

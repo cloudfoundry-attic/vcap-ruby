@@ -1,11 +1,10 @@
 require 'cfautoconfig/configuration_helper'
-SUPPORTED_CARROT_VERSION = '1.0'
 begin
   #Require carrot here is mandatory for configurer to ensure class is loaded before applying OpenClass
   require "carrot"
   require File.join(File.dirname(__FILE__), 'carrot')
   carrot_version = Gem.loaded_specs['carrot'].version
-  if carrot_version >= Gem::Version.new(SUPPORTED_CARROT_VERSION)
+  if carrot_version >= Gem::Version.new(AutoReconfiguration::SUPPORTED_CARROT_VERSION)
     if AutoReconfiguration::ConfigurationHelper.disabled? :rabbitmq
       puts "RabbitMQ auto-reconfiguration disabled."
       class Carrot
@@ -20,13 +19,14 @@ begin
     elsif Carrot.public_instance_methods.index :initialize_with_cf
       puts "Carrot AutoReconfiguration already included."
     else
+      #Introduce around alias into Carrot class
       class Carrot
         include AutoReconfiguration::Carrot
        end
     end
   else
     puts "Auto-reconfiguration not supported for this Carrot version.  " +
-      "Found: #{carrot_version}.  Required: #{SUPPORTED_CARROT_VERSION} or higher."
+      "Found: #{carrot_version}.  Required: #{AutoReconfiguration::SUPPORTED_CARROT_VERSION} or higher."
   end
 rescue LoadError
   puts "No Carrot Library Found. Skipping auto-reconfiguration."

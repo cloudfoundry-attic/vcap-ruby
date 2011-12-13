@@ -1,4 +1,5 @@
 require 'cfruntime/properties'
+require 'cfruntime/mysql'
 
 module AutoReconfiguration
   SUPPORTED_MYSQL2_VERSION = '0.2.7'
@@ -10,17 +11,13 @@ module AutoReconfiguration
     end
      
     def initialize_with_cf(opts = {})
-      @service_props = CFRuntime::CloudApp.service_props('mysql')
-      if @service_props.nil?
-        @auto_config = false
-      else
+      service_names = CFRuntime::CloudApp.service_names_of_type('mysql')
+      if service_names.length == 1
         puts "Auto-reconfiguring MySQL"
-        @auto_config = true
-      end
-      if @auto_config
-        original_initialize @service_props
+        original_initialize(CFRuntime::Mysql2Client.options_for_svc(service_names[0],opts))
       else
-        original_initialize opts    
+        puts "Found #{service_names.length} mysql services. Skipping auto-reconfiguration."
+        original_initialize opts
       end
     end
   end
