@@ -1,5 +1,3 @@
-# Copyright (c) 2009-2011 VMware, Inc.
-
 require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'cfruntime/properties.rb'
 
@@ -100,9 +98,9 @@ describe 'CFRuntime::CloudApp' do
       CFRuntime::CloudApp.service_props('rabbit-test')[:name].should == "rabbit-test"
       CFRuntime::CloudApp.service_props('rabbit-test')[:host].should == SOME_SERVER
       CFRuntime::CloudApp.service_props('rabbit-test')[:port].should == 25046
-      CFRuntime::CloudApp.service_props('rabbit-test')[:username].should_not == nil
-      CFRuntime::CloudApp.service_props('rabbit-test')[:password].should_not == nil
-      CFRuntime::CloudApp.service_props('rabbit-test')[:url].should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:username].should == "rabbituser"
+      CFRuntime::CloudApp.service_props('rabbit-test')[:password].should == "rabbitpass"
+      CFRuntime::CloudApp.service_props('rabbit-test')[:url].should == "amqp://rabbituser:rabbitpass@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/testvhost"
       CFRuntime::CloudApp.service_props('rabbit-test')[:vhost].should == "testvhost"
     end
   end
@@ -114,9 +112,9 @@ describe 'CFRuntime::CloudApp' do
       CFRuntime::CloudApp.service_props('rabbit-test')[:name].should == "rabbit-test"
       CFRuntime::CloudApp.service_props('rabbit-test')[:host].should == SOME_SERVER
       CFRuntime::CloudApp.service_props('rabbit-test')[:port].should == 25046
-      CFRuntime::CloudApp.service_props('rabbit-test')[:username].should_not == nil
-      CFRuntime::CloudApp.service_props('rabbit-test')[:password].should_not == nil
-      CFRuntime::CloudApp.service_props('rabbit-test')[:url].should_not == nil
+      CFRuntime::CloudApp.service_props('rabbit-test')[:username].should == "rabbituser"
+      CFRuntime::CloudApp.service_props('rabbit-test')[:password].should == "rabbitpass"
+      CFRuntime::CloudApp.service_props('rabbit-test')[:url].should == "amqp://rabbituser:rabbitpass@#{SOME_SERVER}:#{SOME_SERVICE_PORT}"
       CFRuntime::CloudApp.service_props('rabbit-test')[:vhost].should == '/'
     end
   end

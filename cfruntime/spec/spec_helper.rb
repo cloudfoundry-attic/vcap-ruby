@@ -1,4 +1,3 @@
-# Copyright (c) 2009-2011 VMware, Inc.
 $:.unshift File.join(File.dirname(__FILE__), '..')
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
@@ -16,6 +15,7 @@ module CFRuntime
 
     SOME_SERVER = '172.30.48.73'
     SOME_PORT = 56789
+    SOME_SERVICE_PORT = 25046
 
     def self.host
       SOME_SERVER
@@ -77,6 +77,14 @@ module CFRuntime
       "2.4"
     end
 
+    def mysql_version
+      "0.3.11"
+    end
+
+    def postgres_version
+      "0.11.0"
+    end
+
     def create_mongo_service(name)
       create_service(name, "mongodb", mongo_version,"db")
     end
@@ -85,29 +93,37 @@ module CFRuntime
       create_service(name, "redis", redis_version)
     end
 
+    def create_mysql_service(name)
+      create_service(name, "mysql", mysql_version,nil,"mysqldatabase")
+    end
+
+    def create_postgres_service(name)
+      create_service(name, "postgresql", postgres_version,nil,"pgdatabase")
+    end
+
     def create_rabbit_service(name, vhost=nil)
       "{\"name\":\"#{name}\",\"label\":\"rabbitmq-#{rabbit_version}\"," +
       "\"plan\":\"free\",\"tags\":[\"rabbitmq\",\"rabbitmq-#{rabbit_version}\"]," +
-      "\"credentials\":{\"hostname\":\"#{SOME_SERVER}\",\"port\":25046,\"user\":\"#{secure_uuid}\"," +
+      "\"credentials\":{\"hostname\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"user\":\"#{secure_uuid}\"," +
       "\"pass\":\"#{secure_uuid}\",\"vhost\":\"#{vhost}\"}}"
     end
 
     def create_rabbit_srs_service(name, vhost=nil)
       if vhost
-        url = "amqp://#{secure_uuid}:#{secure_uuid}@#{SOME_SERVER}:25046/#{vhost}"
+        url = "amqp://rabbituser:rabbitpass@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/#{vhost}"
       else
-        url = "amqp://#{secure_uuid}:#{secure_uuid}@#{SOME_SERVER}:25046"
+        url = "amqp://rabbituser:rabbitpass@#{SOME_SERVER}:#{SOME_SERVICE_PORT}"
       end
       "{\"name\":\"#{name}\",\"label\":\"rabbitmq-#{rabbit_version}\"," +
       "\"plan\":\"free\",\"tags\":[\"rabbitmq\",\"rabbitmq-#{rabbit_version}\"]," +
       "\"credentials\":{\"url\":\"#{url}\"}}"
     end
 
-    def create_service(name, type, version, db=nil)
+    def create_service(name, type, version, db=nil, cred_name=secure_uuid)
       svc = "{\"name\":\"#{name}\",\"label\":\"#{type}-#{version}\",\"plan\":\"free\"," +
         "\"tags\":[\"#{type}\",\"#{type}-#{version}\"],\"credentials\":{\"hostname\":\"#{SOME_SERVER}\"," +
-        "\"host\":\"#{SOME_SERVER}\",\"port\":25046,\"username\":\"#{secure_uuid}\",\"password\":\"#{secure_uuid}\"," +
-        "\"name\":\"#{secure_uuid}\""
+        "\"host\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"username\":\"testuser\",\"password\":\"testpw\"," +
+        "\"name\":\"#{cred_name}\""
         if db
           svc = svc + ", \"db\":\"#{db}\""
         end

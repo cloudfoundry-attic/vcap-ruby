@@ -1,9 +1,8 @@
 require 'cfautoconfig/configuration_helper'
-SUPPORTED_REDIS_VERSION = '2.0'
 begin
   require 'redis'
   require File.join(File.dirname(__FILE__), 'redis')
-  if Gem::Version.new(Redis::VERSION) >= Gem::Version.new(SUPPORTED_REDIS_VERSION)
+  if Gem::Version.new(Redis::VERSION) >= Gem::Version.new(AutoReconfiguration::SUPPORTED_REDIS_VERSION)
     if AutoReconfiguration::ConfigurationHelper.disabled? :redis
       puts "Redis auto-reconfiguration disabled."
       class Redis
@@ -26,7 +25,7 @@ begin
     end
   else
     puts "Auto-reconfiguration not supported for this Redis version.  " +
-      "Found: #{Redis::VERSION}.  Required: #{SUPPORTED_REDIS_VERSION} or higher."
+      "Found: #{Redis::VERSION}.  Required: #{AutoReconfiguration::SUPPORTED_REDIS_VERSION} or higher."
   end
 rescue LoadError
   puts "No Redis Library Found. Skipping auto-reconfiguration."

@@ -1,27 +1,24 @@
 require 'cfruntime/properties'
+require 'cfruntime/carrot'
 
 module AutoReconfiguration
-   module Carrot
-     def self.included( base )
-       base.send( :alias_method, :original_initialize, :initialize)
-       base.send( :alias_method, :initialize, :initialize_with_cf )
-     end
+  SUPPORTED_CARROT_VERSION = '1.0'
+  module Carrot
+    def self.included( base )
+      base.send( :alias_method, :original_initialize, :initialize)
+      base.send( :alias_method, :initialize, :initialize_with_cf )
+    end
 
-     def initialize_with_cf(opts = {})
-       service_props = CFRuntime::CloudApp.service_props('rabbitmq')
-        if(service_props.nil?)
-          puts "No RabbitMQ service bound to app.  Skipping auto-reconfiguration."
-          original_initialize opts
-        else
-          puts "Auto-reconfiguring Carrot."
-          cfoptions = opts
-          cfoptions[:host] = service_props[:host]
-          cfoptions[:port] = service_props[:port]
-          cfoptions[:user] = service_props[:username]
-          cfoptions[:pass] = service_props[:password]
-          cfoptions[:vhost] = service_props[:vhost]
-          original_initialize opts
-        end
-     end
-   end
+    def initialize_with_cf(opts = {})
+      service_names = CFRuntime::CloudApp.service_names_of_type('rabbitmq')
+      if service_names.length == 1
+        puts "Auto-reconfiguring Carrot."
+        cfopts = CFRuntime::CarrotClient.options_for_svc(service_names[0],opts)
+        original_initialize cfopts
+      else
+        puts "Found #{service_names.length} rabbitmq services. Skipping auto-reconfiguration."
+        original_initialize opts
+      end
+    end
+  end
 end

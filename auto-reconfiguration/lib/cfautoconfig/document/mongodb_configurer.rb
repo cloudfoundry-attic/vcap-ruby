@@ -1,10 +1,9 @@
 require 'cfautoconfig/configuration_helper'
-SUPPORTED_MONGO_VERSION = '1.2.0'
 begin
   #Require mongo here is mandatory for configurer to ensure class is loaded before applying OpenClass
   require "mongo"
   require File.join(File.dirname(__FILE__), 'mongodb')
-  if Gem::Version.new(Mongo::VERSION) >= Gem::Version.new(SUPPORTED_MONGO_VERSION)
+  if Gem::Version.new(Mongo::VERSION) >= Gem::Version.new(AutoReconfiguration::SUPPORTED_MONGO_VERSION)
     if AutoReconfiguration::ConfigurationHelper.disabled? :mongodb
        puts "MongoDB auto-reconfiguration disabled."
        module Mongo
@@ -26,6 +25,7 @@ begin
       puts "MongoDB AutoReconfiguration already included."
     else
       module Mongo
+        #Introduce around alias into Mongo Connection class
         class Connection
           include AutoReconfiguration::Mongo
         end
@@ -33,7 +33,7 @@ begin
     end
   else
     puts "Auto-reconfiguration not supported for this Redis version.  " +
-      "Found: #{Mongo::VERSION}.  Required: #{SUPPORTED_MONGO_VERSION} or higher."
+      "Found: #{Mongo::VERSION}.  Required: #{AutoReconfiguration::SUPPORTED_MONGO_VERSION} or higher."
   end
 rescue LoadError
   puts "No MongoDB Library Found. Skipping auto-reconfiguration."

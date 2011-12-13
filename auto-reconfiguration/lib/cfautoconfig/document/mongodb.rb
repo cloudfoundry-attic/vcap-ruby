@@ -1,6 +1,7 @@
 require 'cfruntime/properties'
 
 module AutoReconfiguration
+  SUPPORTED_MONGO_VERSION = '1.2.0'
   module Mongo
 
     def self.included( base )
@@ -11,19 +12,20 @@ module AutoReconfiguration
       base.send( :alias_method, :original_shortcut, :[])
       base.send( :alias_method, :[], :shortcut_with_cf )
     end
-     
+
     def initialize_with_cf(host = nil, port = nil, opts = {})
-      @service_props = CFRuntime::CloudApp.service_props('mongodb')
-      if @service_props.nil?
-        puts "No MongoDB service bound to app.  Skipping auto-reconfiguration."
-        @auto_config = false
-        original_initialize host, port, opts    
-      else
+      service_names = CFRuntime::CloudApp.service_names_of_type('mongodb')
+      if service_names.length == 1
+        @service_props = CFRuntime::CloudApp.service_props('mongodb')
         puts "Auto-reconfiguring MongoDB"
         @auto_config = true
         mongo_host = @service_props[:host]
         mongo_port = @service_props[:port]
         original_initialize mongo_host, mongo_port, opts
+      else
+        puts "Found #{service_names.length} mongo services. Skipping auto-reconfiguration."
+        @auto_config = false
+        original_initialize host, port, opts
       end
     end
      

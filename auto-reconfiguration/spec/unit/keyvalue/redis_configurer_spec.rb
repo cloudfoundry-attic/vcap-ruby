@@ -24,12 +24,29 @@ describe 'AutoReconfiguration::Redis' do
   it 'auto-configures Redis on initialize with path' do
     redis = Redis.new(:path => '127.0.0.1:6321',
                                 :password => 'mypw')
-    redis.client.path.should == '10.20.30.40:1234'
+    redis.client.host.should == '10.20.30.40'
+    redis.client.port.should ==  1234
+    redis.client.path.should == nil
     redis.client.password.should == 'mypass'
   end
 
   it 'does not auto-configure Redis if VCAP_SERVICES not set' do
     ENV['VCAP_SERVICES'] = nil
+    redis = Redis.new(:host => '127.0.0.1',
+                                 :port => '6321',
+                                 :password => 'mypw')
+    redis.client.host.should == '127.0.0.1'
+    redis.client.port.should ==  6321
+    redis.client.password.should == 'mypw'
+  end
+
+  it 'does not auto-configure Redis if multiple Redis services found' do
+    ENV['VCAP_SERVICES'] = '{"redis-2.2":[{"name": "redis-1","label": "redis-2.2",' +
+      '"plan": "free", "credentials": {"node_id": "redis_node_8","hostname": ' +
+      '"10.20.30.40","port": 1234,"password": "mypass","name": "r1"}},' +
+      '{"name": "redis-2","label": "redis-2.2",' +
+      '"plan": "free", "credentials": {"node_id": "redis_node_8","hostname": ' +
+      '"10.20.30.40","port": 1234,"password": "mypass","name": "r1"}}]}'
     redis = Redis.new(:host => '127.0.0.1',
                                  :port => '6321',
                                  :password => 'mypw')

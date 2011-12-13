@@ -1,5 +1,6 @@
 require 'cfruntime/properties'
 module AutoReconfiguration
+  SUPPORTED_PG_VERSION = '0.11.0'
   module Postgres
     def self.included( base )
       base.send( :alias_method, :original_open, :open)
@@ -10,19 +11,37 @@ module AutoReconfiguration
       base.send( :alias_method, :connect_start, :connect_start_with_cf )
     end
 
-    def open_with_cf(*args,&block)
-      connection_string = parse_cf_connection_args(*args,&block)
-      original_open(connection_string)
+    def open_with_cf(*args)
+      connection_string = parse_cf_connection_args(*args)
+      if connection_string
+        #Send the new connection string to passed block for verification.
+        yield connection_string if block_given?
+        original_open(connection_string)
+      else
+        original_open(*args)
+      end
     end
 
-    def connect_with_cf(*args,&block)
-      connection_string = parse_cf_connection_args(*args,&block)
-      original_connect(connection_string)
+    def connect_with_cf(*args)
+      connection_string = parse_cf_connection_args(*args)
+      if connection_string
+        #Send the new connection string to passed block for verification.
+        yield connection_string if block_given?
+        original_connect(connection_string)
+      else
+        original_connect(*args)
+      end
     end
 
-    def connect_start_with_cf(*args,&block)
-      connection_string = parse_cf_connection_args(*args,&block)
-      original_connect_start(connection_string)
+    def connect_start_with_cf(*args)
+      connection_string = parse_cf_connection_args(*args)
+      if connection_string
+        #Send the new connection string to passed block for verification.
+        yield connection_string if block_given?
+        original_connect_start(connection_string)
+      else
+        original_connect_start(*args)
+      end
     end
 
     private
@@ -33,13 +52,14 @@ module AutoReconfiguration
     # (connection_hash)
     # (connection_string)
     # (host, port, options, tty, dbname, user, password)
-    def parse_cf_connection_args(*args,&block)
-      service_props = CFRuntime::CloudApp.service_props('postgresql')
-      if(service_props.nil?)
-        puts "No PostgreSQL service bound to app.  Skipping auto-reconfiguration."
-        return args
+    def parse_cf_connection_args(*args)
+      service_names = CFRuntime::CloudApp.service_names_of_type('postgresql')
+      if service_names.length != 1
+        puts "Found #{service_names.length} postgresql services. Skipping auto-reconfiguration."
+        return
       end
       puts "Auto-reconfiguring PostgreSQL."
+      service_props = CFRuntime::CloudApp.service_props('postgresql')
       #Use the parse_connect_args method from pg to process all possible formats into a single connection string
       conn_string= parse_connect_args(*args)
       sub_or_append_cf_arg(conn_string,'dbname',service_props[:database])
@@ -47,14 +67,6 @@ module AutoReconfiguration
       sub_or_append_cf_arg(conn_string,'port',service_props[:port])
       sub_or_append_cf_arg(conn_string,'user',service_props[:username])
       sub_or_append_cf_arg(conn_string,'password',service_props[:password])
-
-      #Send the new connection string to passed block for verification.
-      #Block should only be passed by tests.  User code never sends a block.
-      #This is done b/c Postgres conn timeout Exception msg doesn't tell you
-      #what server it is trying to connect to
-      if(block)
-        block.yield(conn_string)
-      end
       conn_string
     end
 

@@ -13,6 +13,7 @@ spec = Gem::Specification.new do |s|
 
   s.platform = Gem::Platform::RUBY
   s.extra_rdoc_files = ["LICENSE"]
+  s.rdoc_options = ["-N", "--tab-width=2", "--exclude='cf-autoconfig.gemspec|spec'"]
 
   s.add_dependency "cf-runtime"
 
