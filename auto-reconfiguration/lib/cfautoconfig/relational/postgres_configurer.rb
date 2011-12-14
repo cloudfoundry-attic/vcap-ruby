@@ -23,9 +23,9 @@ begin
           undef_method :connect_start_with_cf
           alias :connect_start :original_connect_start
         end
-    end
+      end
     elsif PGconn.public_methods.index :open_with_cf
-      puts "PostgreSQL AutoReconfiguration already included!!!!"
+      puts "PostgreSQL AutoReconfiguration already included."
     else
       class << PGconn
         include AutoReconfiguration::Postgres
