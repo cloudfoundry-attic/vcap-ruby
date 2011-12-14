@@ -1,0 +1,5 @@
+Gemfile.lock
+.build
+*.gem
+.DS_Store
+spec/spec

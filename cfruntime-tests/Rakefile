@@ -1,0 +1,25 @@
+require 'rake'
+require 'ci/reporter/rake/rspec'
+
+desc "Run specs"
+task "spec" => ["test:spec"]
+
+desc "Run specs using RCov"
+task "spec:rcov" => ["test:spec:rcov"]
+
+desc "Run specs producing results for CI"
+task "ci" => ["ci:spec"]
+
+namespace "test" do
+  task "spec" do |t|
+    sh("cd spec && rake spec")
+  end
+
+  task "spec:rcov" do |t|
+    sh("cd spec && rake spec:rcov")
+  end
+end
+
+namespace :ci do
+  task "spec" => ["ci:setup:rspec", "^spec"]
+end
