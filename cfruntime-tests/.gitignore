@@ -1,0 +1,4 @@
+.build
+*.gem
+.DS_Store
+**/spec/spec

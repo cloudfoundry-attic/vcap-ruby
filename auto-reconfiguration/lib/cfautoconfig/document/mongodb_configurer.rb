@@ -32,7 +32,7 @@ begin
       end
     end
   else
-    puts "Auto-reconfiguration not supported for this Redis version.  " +
+    puts "Auto-reconfiguration not supported for this Mongo version.  " +
       "Found: #{Mongo::VERSION}.  Required: #{AutoReconfiguration::SUPPORTED_MONGO_VERSION} or higher."
   end
 rescue LoadError
