@@ -1,6 +1,7 @@
 require 'cfruntime/properties'
 
 module AutoReconfiguration
+  SUPPORTED_MYSQL2_VERSION = '0.2.7'
   module Mysql
 
     def self.included( base )

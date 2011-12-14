@@ -19,6 +19,7 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency "redis",     "~> 2.0"
   s.add_development_dependency "amqp",      "~> 0.8"
   s.add_development_dependency "carrot",    "~> 1.0"
+  s.add_development_dependency "mysql2",    "~> 0.2.7"
   s.add_development_dependency "pg",        "~> 0.11.0"
   s.add_development_dependency "mongo",     "~> 1.2.0"
   s.add_development_dependency "rake",      "~> 0.9.2"
