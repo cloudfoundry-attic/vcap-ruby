@@ -1,0 +1,7 @@
+Verified+1: cftestbuild <cftestbuild@gmail.com>
+Code-Review+2: Jennifer Hickey <jhickey@vmware.com>
+Submitted-by: Thomas Risberg <trisberg@vmware.com>
+Submitted-at: Thu, 15 Dec 2011 01:58:19 +0000
+Reviewed-on: http://cloudfoundry-codereview.qa.mozycloud.com/gerrit/2409
+Project: vcap-ruby
+Branch: refs/heads/master
