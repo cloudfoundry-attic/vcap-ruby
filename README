@@ -12,7 +12,7 @@ The vcap-ruby repo contains the auto-reconfiguration and cfruntime modules.  cf-
 
 == License
 
-Cloud Foundry uses the Apache 2 license.  See LICENSE for details.
+Cloud Foundry uses the Apache 2 license.  See LICENSE for details .
 
 == Installation Notes
 
