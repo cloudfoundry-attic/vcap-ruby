@@ -97,8 +97,7 @@ def load_mysql
 end
 
 def load_mongo
-  conn = CFRuntime::MongoClient.create_from_svc('test-cfruntime-svc-test-mongo')
-  db = CFRuntime::MongoClient.db_from_svc('test-cfruntime-svc-test-mongo',conn)
+  db = CFRuntime::MongoClient.create_from_svc('test-cfruntime-svc-test-mongo').db
   coll = db['data_values']
 end
 
