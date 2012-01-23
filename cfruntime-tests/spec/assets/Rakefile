@@ -1,0 +1,19 @@
+require 'rake'
+
+desc "Package test apps"
+task "package" => ["bundler:package"]
+
+namespace "bundler" do
+  task "package" do
+    Dir['*/'].map { |asset|
+      puts "Packaging #{asset}"
+      Dir.chdir(asset) do
+        sh("rm -rf vendor")
+        sh("mkdir vendor")
+        sh("mkdir vendor/cache")
+        sh("cp ../../../cf-runtime*.gem vendor/cache/.")
+        sh("bundle package")
+      end
+    }
+  end
+end
