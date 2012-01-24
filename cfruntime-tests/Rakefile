@@ -2,7 +2,7 @@ require 'rake'
 require 'ci/reporter/rake/rspec'
 
 desc "Run specs"
-task "spec" => ["test:spec"]
+task "spec" => ["test:package","test:spec"]
 
 desc "Run specs using RCov"
 task "spec:rcov" => ["test:spec:rcov"]
@@ -18,6 +18,10 @@ namespace "test" do
   task "spec:rcov" do |t|
     sh("cd spec && rake spec:rcov")
   end
+
+  task "package" do |t|
+   sh("cd spec/assets && rake package && cd ../../")
+ end
 end
 
 namespace :ci do
