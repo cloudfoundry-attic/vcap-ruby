@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = s.summary = "Cloud Foundry Runtime Library"
 
   s.platform = Gem::Platform::RUBY
-  s.extra_rdoc_files = ["LICENSE"]
+  s.extra_rdoc_files = ["README.md", "LICENSE"]
   s.rdoc_options = ["-N", "--tab-width=2", "--exclude='cf-runtime.gemspec|spec'"]
 
   s.add_dependency "crack", "~> 0.3.1"
@@ -29,5 +29,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ci_reporter", "~> 1.6.5"
 
   s.require_path = 'lib'
-  s.files = %w(LICENSE) + Dir.glob("{lib}/**/*")
+  s.files = %w(LICENSE README.md) + Dir.glob("{lib}/**/*")
 end
