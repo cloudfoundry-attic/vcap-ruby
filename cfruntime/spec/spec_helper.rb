@@ -1,6 +1,9 @@
 $:.unshift File.join(File.dirname(__FILE__), '..')
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
+require 'simplecov'
+SimpleCov.start
+
 home = File.join(File.dirname(__FILE__), '/..')
 ENV['BUNDLE_GEMFILE'] = "#{home}/Gemfile"
 
