@@ -1,6 +1,11 @@
 $:.unshift File.join(File.dirname(__FILE__), '..')
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
+require 'simplecov'
+require 'simplecov-rcov'
+SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+SimpleCov.start
+
 home = File.join(File.dirname(__FILE__), '/..')
 ENV['BUNDLE_GEMFILE'] = "#{home}/Gemfile"
 
@@ -8,7 +13,6 @@ require 'bundler'
 require 'bundler/setup'
 require 'rubygems'
 require 'rspec'
-
 
 module CFRuntime
   module Test
