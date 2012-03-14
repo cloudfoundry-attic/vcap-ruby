@@ -1,3 +1,8 @@
+require 'simplecov'
+require 'simplecov-rcov'
+SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+SimpleCov.start
+
 $:.unshift File.join(File.dirname(__FILE__), '..')
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
