@@ -27,6 +27,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rack-test", "~> 0.6.1"
   s.add_development_dependency "rspec",     "~> 2.6.0"
   s.add_development_dependency "ci_reporter", "~> 1.6.5"
+  s.add_development_dependency "simplecov", "~> 0.6.1"
+  s.add_development_dependency "simplecov-rcov", "~> 0.2.3"
 
   s.require_path = 'lib'
   s.files = %w(LICENSE README.md) + Dir.glob("{lib}/**/*")
