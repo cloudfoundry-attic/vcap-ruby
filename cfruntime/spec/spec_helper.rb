@@ -1,3 +1,5 @@
+require 'simplecov' if ENV['COVERAGE']
+
 $:.unshift File.join(File.dirname(__FILE__), '..')
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
