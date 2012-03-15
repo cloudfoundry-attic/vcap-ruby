@@ -1,3 +1,5 @@
+require 'simplecov' if ENV['COVERAGE']
+
 $:.unshift File.join(File.dirname(__FILE__), '..')
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
@@ -8,7 +10,6 @@ require 'bundler'
 require 'bundler/setup'
 require 'rubygems'
 require 'rspec'
-
 
 module CFRuntime
   module Test
