@@ -1,5 +1,6 @@
 require File.join(File.dirname(__FILE__), 'spec_helper')
 require 'cfruntime/mongodb'
+require 'readline'
 
 describe 'CFRuntime::MongoClient' do
   include CFRuntime::Test
