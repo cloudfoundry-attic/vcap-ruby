@@ -1,3 +1,12 @@
+if ENV['COVERAGE']
+  require 'simplecov'
+  if ENV['COVERAGE'] =~ /rcov/
+    require 'simplecov-rcov'
+    SimpleCov.formatter = SimpleCov::Formatter::RcovFormatter
+  end
+  SimpleCov.start
+end
+
 $:.unshift File.join(File.dirname(__FILE__), '..')
 $:.unshift File.join(File.dirname(__FILE__), '..', 'lib')
 
