@@ -14,6 +14,8 @@ begin
            if method_defined?(:initialize_with_cf)
              undef_method :initialize_with_cf
              alias :initialize :original_initialize
+             undef_method :apply_saved_authentication_with_cf
+             alias :apply_saved_authentication :original_apply_saved_authentication
              undef_method :db_with_cf
              alias :db :original_db
              undef_method :shortcut_with_cf
