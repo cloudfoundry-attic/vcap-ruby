@@ -24,8 +24,9 @@ describe 'AutoReconfiguration::Mongo' do
           db_name
         end
       end
-      class DB
-        def authenticate(username, password, save_auth=true)
+      class Connection
+        def add_auth(database, username, password)
+          database.should == 'db'
           username.should == '8d93ae0a'
           password.should == '7cf3c0e3'
           true
@@ -44,8 +45,9 @@ describe 'AutoReconfiguration::Mongo' do
           db_name
         end
       end
-      class DB
-        def authenticate(username, password, save_auth=true)
+      class Connection
+        def add_auth(database, username, password)
+          database.should == 'db'
           username.should == '8d93ae0a'
           password.should == '7cf3c0e3'
           true
@@ -64,9 +66,11 @@ describe 'AutoReconfiguration::Mongo' do
           db_name
         end
       end
-      class DB
-        def authenticate(username, password, save_auth=true)
-          raise(Mongo::AuthenticationError, "Authenticate should not have been called!")
+      class Connection
+        def add_auth(database, username, password)
+          if (database == 'admin')
+            raise(Mongo::AuthenticationError, "Authenticate should not have been called!")
+          end
         end
       end
     end
@@ -82,9 +86,11 @@ describe 'AutoReconfiguration::Mongo' do
           db_name
         end
       end
-      class DB
-        def authenticate(username, password, save_auth=true)
-          raise(Mongo::AuthenticationError, "Authenticate should not have been called!")
+      class Connection
+        def add_auth(database, username, password)
+          if (database == 'admin')
+            raise(Mongo::AuthenticationError, "Authenticate should not have been called!")
+          end
         end
       end
     end
@@ -118,11 +124,6 @@ describe 'AutoReconfiguration::Mongo' do
           db_name
         end
       end
-      class DB
-        def authenticate(username, password, save_auth=true)
-          raise(Mongo::AuthenticationError, "Authenticate should not have been called!")
-        end
-      end
     end
     mongo = Mongo::Connection.new('127.0.0.1', 27017, {:connect => false})
     db = mongo.db('test')
@@ -142,8 +143,8 @@ describe 'AutoReconfiguration::Mongo' do
           db_name
         end
       end
-      class DB
-        def authenticate(username, password, save_auth=true)
+      class Connection
+        def add_auth(database, username, password)
           raise(Mongo::AuthenticationError, "Authenticate should not have been called!")
         end
       end
