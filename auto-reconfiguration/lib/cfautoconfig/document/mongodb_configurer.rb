@@ -3,7 +3,8 @@ begin
   #Require mongo here is mandatory for configurer to ensure class is loaded before applying OpenClass
   require "mongo"
   require File.join(File.dirname(__FILE__), 'mongodb')
-  if Gem::Version.new(Mongo::VERSION) >= Gem::Version.new(AutoReconfiguration::SUPPORTED_MONGO_VERSION)
+  mongo_version = Gem.loaded_specs['mongo'].version
+  if mongo_version >= Gem::Version.new(AutoReconfiguration::SUPPORTED_MONGO_VERSION)
     if AutoReconfiguration::ConfigurationHelper.disabled? :mongodb
        puts "MongoDB auto-reconfiguration disabled."
        module Mongo
@@ -35,7 +36,7 @@ begin
     end
   else
     puts "Auto-reconfiguration not supported for this Mongo version.  " +
-      "Found: #{Mongo::VERSION}.  Required: #{AutoReconfiguration::SUPPORTED_MONGO_VERSION} or higher."
+      "Found: #{mongo_version}.  Required: #{AutoReconfiguration::SUPPORTED_MONGO_VERSION} or higher."
   end
 rescue LoadError
   puts "No MongoDB Library Found. Skipping auto-reconfiguration."

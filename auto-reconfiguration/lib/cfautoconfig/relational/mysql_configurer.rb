@@ -4,7 +4,8 @@ begin
   #Require mysql2 here is mandatory for configurer to ensure class is loaded before applying OpenClass
   require "mysql2"
   require File.join(File.dirname(__FILE__), 'mysql')
-  if Gem::Version.new(Mysql2::VERSION) >= Gem::Version.new(AutoReconfiguration::SUPPORTED_MYSQL2_VERSION)
+  mysql2_version = Gem.loaded_specs['mysql2'].version
+  if mysql2_version >= Gem::Version.new(AutoReconfiguration::SUPPORTED_MYSQL2_VERSION)
     if AutoReconfiguration::ConfigurationHelper.disabled? :mysql
       puts "MySQL auto-reconfiguration disabled."
       module Mysql2
@@ -29,7 +30,7 @@ begin
     end
   else
     puts "Auto-reconfiguration not supported for this Mysql2 version.  " +
-      "Found: #{Mysql2::VERSION}.  Required: #{AutoReconfiguration::SUPPORTED_MYSQL2_VERSION} or higher."
+      "Found: #{mysql2_version}.  Required: #{AutoReconfiguration::SUPPORTED_MYSQL2_VERSION} or higher."
   end
 rescue LoadError
   puts "No MySQL Library Found. Skipping auto-reconfiguration."

@@ -3,7 +3,8 @@ begin
   #Require amqp here is mandatory for configurer to ensure class is loaded before applying OpenClass
   require "amqp"
   require File.join(File.dirname(__FILE__), 'amqp')
-  if Gem::Version.new(AMQP::VERSION) >= Gem::Version.new(AutoReconfiguration::SUPPORTED_AMQP_VERSION)
+  amqp_version = Gem.loaded_specs['amqp'].version
+  if amqp_version >= Gem::Version.new(AutoReconfiguration::SUPPORTED_AMQP_VERSION)
     if AutoReconfiguration::ConfigurationHelper.disabled? :rabbitmq
       puts "RabbitMQ auto-reconfiguration disabled."
       class << AMQP
@@ -25,7 +26,7 @@ begin
     end
   else
     puts "Auto-reconfiguration not supported for this AMQP version.  " +
-      "Found: #{AMQP::VERSION}.  Required: #{AutoReconfiguration::SUPPORTED_AMQP_VERSION} or higher."
+      "Found: #{amqp_version}.  Required: #{AutoReconfiguration::SUPPORTED_AMQP_VERSION} or higher."
   end
 rescue LoadError
   puts "No AMQP Library Found. Skipping auto-reconfiguration."
