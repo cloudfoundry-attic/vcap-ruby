@@ -3,7 +3,7 @@ begin
   #Require pg here is mandatory for configurer to ensure class is loaded before applying OpenClass
   require "pg"
   require File.join(File.dirname(__FILE__), 'postgres')
-  if Gem::Version.new(PGconn::VERSION) >= Gem::Version.new(AutoReconfiguration::SUPPORTED_PG_VERSION)
+  if Gem.loaded_specs['pg'].version >= Gem::Version.new(AutoReconfiguration::SUPPORTED_PG_VERSION)
     if AutoReconfiguration::ConfigurationHelper.disabled? :postgresql
       puts "PostgreSQL auto-reconfiguration disabled."
       class << PGconn
@@ -33,7 +33,7 @@ begin
     end
   else
     puts "Auto-reconfiguration not supported for this PG version.  " +
-      "Found: #{PGconn::VERSION}.  Required: #{AutoReconfiguration::SUPPORTED_PG_VERSION} or higher."
+      "Found: #{Gem.loaded_specs['pg'].version}.  Required: #{AutoReconfiguration::SUPPORTED_PG_VERSION} or higher."
   end
 rescue LoadError
   puts "No PostgreSQL Library Found. Skipping auto-reconfiguration."
