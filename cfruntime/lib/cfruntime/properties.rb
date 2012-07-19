@@ -1,7 +1,7 @@
 module CFRuntime
 
-  require 'crack/json'
   require 'uri'
+  require File.join(File.dirname(__FILE__), 'okjson')
 
   class CloudApp
 
@@ -30,7 +30,7 @@ module CFRuntime
       def service_props(service_name)
         registered_svcs = {}
         if ENV['VCAP_SERVICES']
-          svcs = Crack::JSON.parse(ENV['VCAP_SERVICES'])
+          svcs = CFRuntime::OkJson.decode(ENV['VCAP_SERVICES'])
         else
           svcs = {}
         end
@@ -91,7 +91,7 @@ module CFRuntime
       def service_names
         service_names = []
         if ENV['VCAP_SERVICES']
-          Crack::JSON.parse(ENV['VCAP_SERVICES']).each do |key,list|
+          CFRuntime::OkJson.decode(ENV['VCAP_SERVICES']).each do |key,list|
             list.each do |svc|
               service_names << svc["name"]
             end
@@ -106,7 +106,7 @@ module CFRuntime
       def service_names_of_type(type)
         service_names = []
         if ENV['VCAP_SERVICES']
-          Crack::JSON.parse(ENV['VCAP_SERVICES']).each do |key,list|
+          CFRuntime::OkJson.decode(ENV['VCAP_SERVICES']).each do |key,list|
             label, version = key.split('-')
             list.each do |svc|
               if label == type
