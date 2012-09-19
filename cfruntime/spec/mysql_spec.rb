@@ -1,8 +1,7 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'spec_helper'
 require 'cfruntime/mysql'
 
 describe 'CFRuntime::Mysql2Client' do
-  include CFRuntime::Test
 
   before(:each) do
     module Mysql2

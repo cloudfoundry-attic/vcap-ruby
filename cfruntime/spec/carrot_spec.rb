@@ -1,8 +1,7 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'spec_helper'
 require 'cfruntime/carrot'
 
 describe 'CFRuntime::CarrotClient' do
-  include CFRuntime::Test
 
   it 'creates a client with a Rabbit service by type and no additional options' do
     svcs = {"rabbitmq-#{rabbit_version}"=>[create_rabbit_srs_service('rabbit-test','testvhost')]}

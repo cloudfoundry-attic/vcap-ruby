@@ -1,4 +1,5 @@
 require 'amqp'
+require 'cfruntime/properties'
 module CFRuntime
   class AMQPClient
 

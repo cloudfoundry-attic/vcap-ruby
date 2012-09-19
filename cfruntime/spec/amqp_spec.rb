@@ -1,8 +1,7 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'spec_helper'
 require 'cfruntime/amqp'
 
 describe 'CFRuntime::AMQPClient' do
-  include CFRuntime::Test
 
   before(:each) do
     @mock_connection = mock("connection")

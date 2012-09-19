@@ -1,8 +1,7 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'spec_helper'
 require 'cfruntime/redis'
 
 describe 'CFRuntime::RedisClient' do
-  include CFRuntime::Test
 
   it 'creates a client with a Redis service by type and no additional options' do
     svcs = {

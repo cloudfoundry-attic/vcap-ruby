@@ -1,8 +1,7 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'spec_helper'
 require 'cfruntime/mongodb'
 
 describe 'CFRuntime::MongoClient' do
-  include CFRuntime::Test
 
   before(:each) do
     module Mongo

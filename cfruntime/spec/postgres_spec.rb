@@ -1,8 +1,7 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'spec_helper'
 require 'cfruntime/postgres'
 
 describe 'CFRuntime::PGClient' do
-  include CFRuntime::Test
 
   it 'creates a client with a Postgres service by type and additional options' do
     svcs = {"postgresql-#{postgres_version}"=>[create_postgres_service('pg-test')]}

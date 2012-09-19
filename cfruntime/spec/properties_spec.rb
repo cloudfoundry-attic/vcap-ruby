@@ -1,8 +1,7 @@
-require File.join(File.dirname(__FILE__), 'spec_helper')
+require 'spec_helper'
 require 'cfruntime/properties.rb'
 
 describe 'CFRuntime::CloudApp' do
-  include CFRuntime::Test
 
   before do
   end
@@ -20,8 +19,8 @@ describe 'CFRuntime::CloudApp' do
   it 'exposes host and port in the cloud' do
     with_vcap_application do
       CFRuntime::CloudApp.running_in_cloud?.should == true
-      CFRuntime::CloudApp.host.should == CFRuntime::Test.host
-      CFRuntime::CloudApp.port.should == CFRuntime::Test.port
+      CFRuntime::CloudApp.host.should == SOME_SERVER
+      CFRuntime::CloudApp.port.should == "#{SOME_PORT}"
     end
   end
 
@@ -125,7 +124,7 @@ describe 'CFRuntime::CloudApp' do
       "mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.running_in_cloud?.should == true
-      CFRuntime::CloudApp.service_names.should == ['redis-test', 'mongo-test']
+      CFRuntime::CloudApp.service_names.sort.should == ['mongo-test', 'redis-test']
     end
   end
 
@@ -142,7 +141,7 @@ describe 'CFRuntime::CloudApp' do
       "mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test'), create_mongo_service('mongo-test2')]}
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.running_in_cloud?.should == true
-      CFRuntime::CloudApp.service_names_of_type('mongodb').should == ['mongo-test', 'mongo-test2']
+      CFRuntime::CloudApp.service_names_of_type('mongodb').sort.should == ['mongo-test', 'mongo-test2']
       CFRuntime::CloudApp.service_names_of_type('mysql').should == []
     end
   end
