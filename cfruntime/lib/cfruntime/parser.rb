@@ -1,0 +1,5 @@
+require "cfruntime/parser/mongodb_parser"
+require "cfruntime/parser/mysql_parser"
+require "cfruntime/parser/postgresql_parser"
+require "cfruntime/parser/rabbitmq_parser"
+require "cfruntime/parser/redis_parser"
