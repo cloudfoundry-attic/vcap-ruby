@@ -145,4 +145,14 @@ describe 'CFRuntime::CloudApp' do
       CFRuntime::CloudApp.service_names_of_type('mysql').should == []
     end
   end
+
+  it 'skips parsing unsupported service types' do
+    svcs = {
+      "redis-#{redis_version}"=>[create_redis_service('redis-test')],
+      "mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')],
+      "newservicetype-1.0"=>["{\"foo\":\"bar\"}"]}
+    with_vcap_services(svcs) do
+      CFRuntime::CloudApp.service_props('mongodb').should_not == nil
+    end
+  end
 end

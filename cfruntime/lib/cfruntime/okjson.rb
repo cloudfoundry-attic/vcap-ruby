@@ -27,8 +27,8 @@ require 'stringio'
 # Some parts adapted from
 # http://golang.org/src/pkg/json/decode.go and
 # http://golang.org/src/pkg/utf8/utf8.go
-module CFRuntime::OkJson
-  extend self
+module CFRuntime
+  module OkJson extend self
 
 
   # Decodes a json document in string s and
@@ -593,4 +593,5 @@ module CFRuntime::OkJson
 
   Spc = ' '[0]
   Unesc = {?b=>?\b, ?f=>?\f, ?n=>?\n, ?r=>?\r, ?t=>?\t}
+end
 end
