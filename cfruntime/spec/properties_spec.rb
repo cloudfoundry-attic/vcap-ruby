@@ -33,7 +33,9 @@ describe 'CFRuntime::CloudApp' do
   end
 
   it 'works with a service' do
-    svcs = {"mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
+    svcs = {
+      "mongodb-#{mongo_version}" => [create_mongo_service('mongo-test')]
+    }
     with_vcap_services(svcs) do
       mongo_svc = CFRuntime::CloudApp.service_props('mongo-test')
       mongo_svc[:name].should == "mongo-test"
@@ -41,7 +43,9 @@ describe 'CFRuntime::CloudApp' do
   end
 
   it 'exposes a single service under the name of the service type' do
-    svcs = {"mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
+    svcs = {
+      "mongodb-#{mongo_version}" => [create_mongo_service('mongo-test')]
+    }
     with_vcap_services(svcs) do
       mongo_svc = CFRuntime::CloudApp.service_props('mongodb')
       mongo_svc[:name].should == "mongo-test"
@@ -49,7 +53,9 @@ describe 'CFRuntime::CloudApp' do
   end
 
   it 'works with two services of the same type' do
-    svcs = {"mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test1'), create_mongo_service('mongo-test2')]}
+    svcs = {
+      "mongodb-#{mongo_version}" => [create_mongo_service('mongo-test1'), create_mongo_service('mongo-test2')]
+    }
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.service_props('mongodb').should == nil
       CFRuntime::CloudApp.service_props('mongo-test1')[:name].should == "mongo-test1"
@@ -59,8 +65,9 @@ describe 'CFRuntime::CloudApp' do
 
   it 'works with services of different types' do
     svcs = {
-      "redis-#{redis_version}"=>[create_redis_service('redis-test')],
-      "mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
+      "redis-#{redis_version}" => [create_redis_service('redis-test')],
+      "mongodb-#{mongo_version}" => [create_mongo_service('mongo-test')]
+    }
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.service_props('mongodb').should_not == nil
       CFRuntime::CloudApp.service_props('redis').should_not == nil
@@ -70,7 +77,9 @@ describe 'CFRuntime::CloudApp' do
   end
 
   it 'works with a mongo service and exposes db name' do
-    svcs = {"mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
+    svcs = {
+      "mongodb-#{mongo_version}" => [create_mongo_service('mongo-test')]
+    }
     with_vcap_services(svcs) do
       mongo_svc = CFRuntime::CloudApp.service_props('mongodb')
       mongo_svc[:db].should == "db"
@@ -78,7 +87,9 @@ describe 'CFRuntime::CloudApp' do
   end
 
   it 'works with rabbitmq service (old format)' do
-    svcs = {"rabbitmq-#{rabbit_version}"=>[create_rabbit_service('rabbit-test','testvhost')]}
+    svcs = {
+      "rabbitmq-#{rabbit_version}" => [create_rabbit_service('rabbit-test','testvhost')]
+    }
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.service_props('rabbitmq').should_not == nil
       CFRuntime::CloudApp.service_props('rabbit-test')[:name].should == "rabbit-test"
@@ -91,7 +102,9 @@ describe 'CFRuntime::CloudApp' do
   end
 
   it 'works with rabbitmq service (new format)' do
-    svcs = {"rabbitmq-#{rabbit_version}"=>[create_rabbit_srs_service('rabbit-test','testvhost')]}
+    svcs = {
+      "rabbitmq-#{rabbit_version}" => [create_rabbit_srs_service('rabbit-test','testvhost')]
+    }
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.service_props('rabbitmq').should_not == nil
       CFRuntime::CloudApp.service_props('rabbit-test')[:name].should == "rabbit-test"
@@ -105,7 +118,9 @@ describe 'CFRuntime::CloudApp' do
   end
 
   it 'works with rabbitmq service without vhost (new format)' do
-    svcs = {"rabbitmq-#{rabbit_version}"=>[create_rabbit_srs_service('rabbit-test')]}
+    svcs = {
+      "rabbitmq-#{rabbit_version}" => [create_rabbit_srs_service('rabbit-test')]
+    }
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.service_props('rabbitmq').should_not == nil
       CFRuntime::CloudApp.service_props('rabbit-test')[:name].should == "rabbit-test"
@@ -120,8 +135,9 @@ describe 'CFRuntime::CloudApp' do
 
   it 'exposes available service names' do
     svcs = {
-      "redis-#{redis_version}"=>[create_redis_service('redis-test')],
-      "mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test')]}
+      "redis-#{redis_version}" => [create_redis_service('redis-test')],
+      "mongodb-#{mongo_version}" => [create_mongo_service('mongo-test')]
+    }
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.running_in_cloud?.should == true
       CFRuntime::CloudApp.service_names.sort.should == ['mongo-test', 'redis-test']
@@ -137,12 +153,24 @@ describe 'CFRuntime::CloudApp' do
 
   it 'enumerates available service names based on type and empty list if no service is defined' do
     svcs = {
-      "redis-#{redis_version}"=>[create_redis_service('redis-test')],
-      "mongodb-#{mongo_version}"=>[create_mongo_service('mongo-test'), create_mongo_service('mongo-test2')]}
+      "redis-#{redis_version}" => [create_redis_service('redis-test')],
+      "mongodb-#{mongo_version}" => [create_mongo_service('mongo-test'), create_mongo_service('mongo-test2')]
+    }
     with_vcap_services(svcs) do
       CFRuntime::CloudApp.running_in_cloud?.should == true
       CFRuntime::CloudApp.service_names_of_type('mongodb').sort.should == ['mongo-test', 'mongo-test2']
       CFRuntime::CloudApp.service_names_of_type('mysql').should == []
+    end
+  end
+
+  it 'skips parsing unsupported service types' do
+    svcs = {
+      "redis-#{redis_version}" => [create_redis_service('redis-test')],
+      "mongodb-#{mongo_version}" => [create_mongo_service('mongo-test')],
+      "newservicetype-1.0" => ["{\"foo\":\"bar\"}"]
+    }
+    with_vcap_services(svcs) do
+      CFRuntime::CloudApp.service_props('mongodb').should_not == nil
     end
   end
 end
