@@ -7,12 +7,12 @@ SOME_SERVICE_PORT = 25046
 module ServiceSpecHelpers
 
   def with_vcap_application
-    vcap_app = '{"instance_id":"#{secure_uuid}",
+    vcap_app = '{"instance_id":"testid",
       "instance_index": 0,
       "name":"tr_env",
       "uris":["tr_env.cloudfoundry.com"],
       "users":["trisberg@vmware.com"],
-      "version":"#{secure_uuid}",
+      "version":"1.0",
       "start":"2011-11-05 13:29:32 +0000",
       "runtime":"ruby19",
       "state_timestamp":1320499772,
@@ -41,11 +41,6 @@ module ServiceSpecHelpers
     yield
   end
 
-  # this is in commons.rb - could require this maybe?
-  def secure_uuid
-    result = File.open('/dev/urandom') { |x| x.read(16).unpack('H*')[0] }
-  end
-
   def mongo_version
     "1.8"
   end
@@ -71,7 +66,7 @@ module ServiceSpecHelpers
   end
 
   def create_redis_service(name)
-    create_service(name, "redis", redis_version)
+    create_service(name, "redis", redis_version, nil, "redisdata")
   end
 
   def create_mysql_service(name)
@@ -85,8 +80,8 @@ module ServiceSpecHelpers
   def create_rabbit_service(name, vhost=nil)
     "{\"name\":\"#{name}\",\"label\":\"rabbitmq-#{rabbit_version}\"," +
     "\"plan\":\"free\",\"tags\":[\"rabbitmq\",\"rabbitmq-#{rabbit_version}\"]," +
-    "\"credentials\":{\"hostname\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"user\":\"#{secure_uuid}\"," +
-    "\"pass\":\"#{secure_uuid}\",\"vhost\":\"#{vhost}\"}}"
+    "\"credentials\":{\"hostname\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"user\":\"rabbituser\"," +
+    "\"pass\":\"rabbitpass\",\"vhost\":\"#{vhost}\"}}"
   end
 
   def create_rabbit_srs_service(name, vhost=nil)
@@ -100,7 +95,7 @@ module ServiceSpecHelpers
     "\"credentials\":{\"url\":\"#{url}\"}}"
   end
 
-  def create_service(name, type, version, db=nil, cred_name=secure_uuid)
+  def create_service(name, type, version, db=nil, cred_name=nil)
     svc = "{\"name\":\"#{name}\",\"label\":\"#{type}-#{version}\",\"plan\":\"free\"," +
       "\"tags\":[\"#{type}\",\"#{type}-#{version}\"],\"credentials\":{\"hostname\":\"#{SOME_SERVER}\"," +
       "\"host\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"username\":\"testuser\",\"password\":\"testpw\"," +
