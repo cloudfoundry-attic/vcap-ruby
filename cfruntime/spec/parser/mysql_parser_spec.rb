@@ -14,7 +14,8 @@ describe 'CFRuntime::MysqlParser' do
         :password => "testpw",
         :host => SOME_SERVER,
         :port => SOME_SERVICE_PORT,
-        :database => "mysqldatabase"
+        :database => "mysqldatabase",
+        :url => "mysql://testuser:testpw@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/mysqldatabase"
       }
       CFRuntime::CloudApp.service_props('mysql').should == expected
     end

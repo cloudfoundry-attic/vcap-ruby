@@ -14,7 +14,8 @@ describe 'CFRuntime::PostgresqlParser' do
         :password => "testpw",
         :host => SOME_SERVER,
         :port => SOME_SERVICE_PORT,
-        :database => "pgdatabase"
+        :database => "pgdatabase",
+        :url => "postgresql://testuser:testpw@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/pgdatabase"
       }
       CFRuntime::CloudApp.service_props('postgresql').should == expected
     end

@@ -14,7 +14,8 @@ describe 'CFRuntime::MongoParser' do
         :password => "testpw",
         :host => SOME_SERVER,
         :port => SOME_SERVICE_PORT,
-        :db => "db"
+        :db => "db",
+        :url => "mongodb://testuser:testpw@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/db"
       }
       CFRuntime::CloudApp.service_props('mongodb').should == expected
     end

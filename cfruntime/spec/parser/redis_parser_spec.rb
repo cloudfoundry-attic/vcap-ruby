@@ -14,7 +14,8 @@ describe 'CFRuntime::RedisParser' do
         :password => "testpw",
         :host => SOME_SERVER,
         :port => SOME_SERVICE_PORT,
-        :database => "redisdata"
+        :database => "redisdata",
+        :url => "redis://testuser:testpw@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/redisdata"
       }
       CFRuntime::CloudApp.service_props('redis').should == expected
     end

@@ -78,10 +78,13 @@ module ServiceSpecHelpers
   end
 
   def create_rabbit_service(name, vhost=nil)
-    "{\"name\":\"#{name}\",\"label\":\"rabbitmq-#{rabbit_version}\"," +
+    svc = "{\"name\":\"#{name}\",\"label\":\"rabbitmq-#{rabbit_version}\"," +
     "\"plan\":\"free\",\"tags\":[\"rabbitmq\",\"rabbitmq-#{rabbit_version}\"]," +
     "\"credentials\":{\"hostname\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"user\":\"rabbituser\"," +
-    "\"pass\":\"rabbitpass\",\"vhost\":\"#{vhost}\"}}"
+    "\"pass\":\"rabbitpass\""
+    svc = svc + ",\"vhost\":\"#{vhost}\""  if vhost
+    svc = svc + "}}"
+    svc
   end
 
   def create_rabbit_srs_service(name, vhost=nil)
