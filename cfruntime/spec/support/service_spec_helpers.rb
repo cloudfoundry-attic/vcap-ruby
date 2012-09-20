@@ -61,20 +61,26 @@ module ServiceSpecHelpers
     "0.11.0"
   end
 
-  def create_mongo_service(name)
-    create_service(name, "mongodb", mongo_version,"db")
+  def create_mongo_service(name, url=false)
+    svc = "{\"name\":\"#{name}\",\"label\":\"mongodb-#{mongo_version}\",\"plan\":\"free\"," +
+      "\"tags\":[\"mongodb\",\"mongodb-#{mongo_version}\"],\"credentials\":{\"hostname\":\"#{SOME_SERVER}\"," +
+      "\"host\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"username\":\"testuser\",\"password\":\"testpw\"," +
+      "\"db\":\"db\""
+    svc = svc + ", \"url\":\"mongodb://testuser:testpw@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/db\"" if url
+    svc = svc + "}}"
+    svc
   end
 
   def create_redis_service(name)
-    create_service(name, "redis", redis_version, nil, "redisdata")
+    create_service(name, "redis", redis_version, "redisdata")
   end
 
   def create_mysql_service(name)
-    create_service(name, "mysql", mysql_version,nil,"mysqldatabase")
+    create_service(name, "mysql", mysql_version,"mysqldatabase")
   end
 
   def create_postgres_service(name)
-    create_service(name, "postgresql", postgres_version,nil,"pgdatabase")
+    create_service(name, "postgresql", postgres_version,"pgdatabase")
   end
 
   def create_rabbit_service(name, vhost=nil)
@@ -98,14 +104,10 @@ module ServiceSpecHelpers
     "\"credentials\":{\"url\":\"#{url}\"}}"
   end
 
-  def create_service(name, type, version, db=nil, cred_name=nil)
+  def create_service(name, type, version, cred_name)
     svc = "{\"name\":\"#{name}\",\"label\":\"#{type}-#{version}\",\"plan\":\"free\"," +
       "\"tags\":[\"#{type}\",\"#{type}-#{version}\"],\"credentials\":{\"hostname\":\"#{SOME_SERVER}\"," +
       "\"host\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"username\":\"testuser\",\"password\":\"testpw\"," +
-      "\"name\":\"#{cred_name}\""
-      if db
-        svc = svc + ", \"db\":\"#{db}\""
-      end
-      svc = svc + '}}'
+      "\"name\":\"#{cred_name}\"}}"
   end
 end
