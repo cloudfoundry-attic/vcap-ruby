@@ -20,6 +20,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "mongo",     "~> 1.2.0"
   s.add_development_dependency "pg",        "~> 0.11.0"
   s.add_development_dependency "mysql2",    "~> 0.2.7"
+  s.add_development_dependency "aws-s3",    "~> 0.6.3"
   s.add_development_dependency "rake",      "~> 0.9.2"
   s.add_development_dependency "rack-test", "~> 0.6.1"
   s.add_development_dependency "rspec",     "~> 2.6.0"

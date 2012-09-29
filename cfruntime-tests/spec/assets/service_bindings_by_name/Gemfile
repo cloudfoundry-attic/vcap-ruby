@@ -7,3 +7,4 @@ gem 'json'
 gem 'carrot'
 gem 'pg',"~> 0.11.0"
 gem 'cf-runtime'
+gem 'aws-s3'

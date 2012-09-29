@@ -22,5 +22,9 @@ begin
   require 'cfruntime/redis'
 rescue LoadError
 end
+begin
+  require 'cfruntime/aws_s3'
+rescue LoadError
+end
 require 'cfruntime/properties'
 require 'cfruntime/version'

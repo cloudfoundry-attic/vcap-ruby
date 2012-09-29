@@ -61,6 +61,10 @@ module ServiceSpecHelpers
     "0.11.0"
   end
 
+  def blob_version
+    "0.5.1"
+  end
+
   def create_mongo_service(name, url=false)
     svc = "{\"name\":\"#{name}\",\"label\":\"mongodb-#{mongo_version}\",\"plan\":\"free\"," +
       "\"tags\":[\"mongodb\",\"mongodb-#{mongo_version}\"],\"credentials\":{\"hostname\":\"#{SOME_SERVER}\"," +
@@ -69,6 +73,13 @@ module ServiceSpecHelpers
     svc = svc + ", \"url\":\"mongodb://testuser:testpw@#{SOME_SERVER}:#{SOME_SERVICE_PORT}/db\"" if url
     svc = svc + "}}"
     svc
+  end
+
+  def create_blob_service(name)
+    svc = "{\"name\":\"#{name}\",\"label\":\"blob-#{blob_version}\",\"plan\":\"free\"," +
+      "\"credentials\":{\"hostname\":\"#{SOME_SERVER}\"," +
+      "\"host\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"username\":\"testuser\",\"password\":\"testpw\"" +
+      "}}"
   end
 
   def create_redis_service(name)
