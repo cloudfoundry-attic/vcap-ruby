@@ -1,3 +1,4 @@
+require "cfruntime/parser/blob_parser"
 require "cfruntime/parser/default_parser"
 require "cfruntime/parser/mongodb_parser"
 require "cfruntime/parser/mysql_parser"
