@@ -185,6 +185,18 @@ module CFRuntimeTests
     attach_provisioned_service app,service_manifest
   end
 
+  def provision_blob_service name,app
+    @client.create_service(:blob, name)
+    service_manifest = {
+      :type=>"generic",
+      :vendor=>"blob",
+      :tier=>"free",
+      :version=>"0.5.1",
+      :name=>name,
+    }
+    attach_provisioned_service app,service_manifest
+  end
+
   def attach_provisioned_service app, service_manifest
     app_manifest = get_app_status app
     provisioned_service = app_manifest[:services]

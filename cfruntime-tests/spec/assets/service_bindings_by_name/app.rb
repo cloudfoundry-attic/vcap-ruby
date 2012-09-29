@@ -6,6 +6,7 @@ require 'mysql2'
 require 'carrot'
 require 'uri'
 require 'pg'
+require 'aws/s3'
 require 'cfruntime'
 
 get '/env' do
@@ -85,6 +86,26 @@ get '/service/rabbit/:key' do
   read_from_rabbit(params[:key], client)
 end
 
+post '/service/blob/:bucket' do
+  load_blob
+  AWS::S3::Bucket.create(params[:bucket])
+end
+
+get '/service/blob/:bucket' do
+  load_blob
+  AWS::S3::Bucket.find(params[:bucket]).inspect
+end
+
+post '/service/blob/:bucket/:object' do
+  load_blob
+  AWS::S3::S3Object.store(params[:object], request.body, params[:bucket])
+end
+
+get '/service/blob/:bucket/:object' do
+  load_blob
+  AWS::S3::S3Object.value(params[:object], params[:bucket])
+end
+
 def load_redis
   CFRuntime::RedisClient.create_from_svc('test-cfruntime-svc-test-redis')
 end
@@ -105,6 +126,10 @@ def load_postgresql
   client = CFRuntime::PGClient.create_from_svc('test-cfruntime-svc-test-postgres')
   client.query("create table data_values (id varchar(20), data_value varchar(20));") if client.query("select * from information_schema.tables where table_name = 'data_values';").first.nil?
   client
+end
+
+def load_blob
+  CFRuntime::AWSS3Client.create_from_svc('test-cfruntime-svc-test-blob')
 end
 
 def rabbit_service

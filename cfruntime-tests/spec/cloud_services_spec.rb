@@ -23,6 +23,10 @@ describe 'CFRuntime' do
     verify_post_to_app @app_name, "service/mongo/abc", 'mongoabc'
     verify_post_to_app @app_name, "service/rabbit/abc", 'rabbitabc'
     verify_post_to_app @app_name, "service/postgresql/abc", 'postgresqlabc'
+    contents = post_to_app @app_name, "service/blob/container1", "dummy"
+    contents.response_code.should == 200
+    contents.close
+    verify_post_to_app @app_name, "service/blob/container1/file1", "abc"
     delete_app @app_name
   end
 
@@ -36,11 +40,15 @@ describe 'CFRuntime' do
     provision_mongodb_service("test-#{@app_name}2-mongo",@app_name)
     provision_postgresql_service("test-#{@app_name}2-postgres",@app_name)
     start_app @app_name
-    verify_post_to_app @app_name, "service/mysql/abc", 'mysqlabc'
-    verify_post_to_app @app_name, "service/redis/abc", 'redisabc'
-    verify_post_to_app @app_name, "service/mongo/abc", 'mongoabc'
-    verify_post_to_app @app_name, "service/rabbit/abc", 'rabbitabc'
-    verify_post_to_app @app_name, "service/postgresql/abc", 'postgresqlabc'
+    verify_post_to_app @app_name, "service/mysql/abc", "mysqlabc"
+    verify_post_to_app @app_name, "service/redis/abc", "redisabc"
+    verify_post_to_app @app_name, "service/mongo/abc", "mongoabc"
+    verify_post_to_app @app_name, "service/rabbit/abc", "rabbitabc"
+    verify_post_to_app @app_name, "service/postgresql/abc", "postgresqlabc"
+    contents = post_to_app @app_name, "service/blob/container1", "dummy"
+    contents.response_code.should == 200
+    contents.close
+    verify_post_to_app @app_name, "service/blob/container1/file1", "abc"
     delete_app @app_name
   end
 
@@ -71,6 +79,7 @@ describe 'CFRuntime' do
     provision_rabbitmq_service("test-#{app}-rabbit",app)
     provision_mongodb_service("test-#{app}-mongo",app)
     provision_postgresql_service("test-#{app}-postgres",app)
+    provision_blob_service("test-#{app}-blob",app)
     start_app app
   end
 end
