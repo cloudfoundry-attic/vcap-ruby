@@ -35,3 +35,10 @@ if CFRuntime::CloudApp.service_props('rabbitmq')
 else
   puts "No RabbitMQ service bound to app.  Skipping auto-reconfiguration."
 end
+
+if CFRuntime::CloudApp.service_props('blob')
+  puts "Loading Blob auto-reconfiguration."
+  require 'cfautoconfig/blob/aws_s3_configurer'
+else
+  puts "No Blob service bound to app.  Skipping auto-reconfiguration."
+end
