@@ -15,7 +15,7 @@ spec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["LICENSE"]
   s.rdoc_options = ["-N", "--tab-width=2", "--exclude='cf-autoconfig.gemspec|spec'"]
 
-  s.add_dependency "cf-runtime", "= 0.0.2"
+  s.add_dependency "cf-runtime", "= 0.1.1"
 
   s.add_development_dependency "redis",     "~> 2.0"
   s.add_development_dependency "amqp",      "~> 0.8"
@@ -28,6 +28,7 @@ spec = Gem::Specification.new do |s|
   s.add_development_dependency "ci_reporter", "~> 1.6.5"
   s.add_development_dependency "simplecov", "~> 0.6.1"
   s.add_development_dependency "simplecov-rcov", "~> 0.2.3"
+  s.add_development_dependency "aws-s3",    "~> 0.6.3"
 
   s.require_path = 'lib'
   s.files = %w(LICENSE) + Dir.glob("{lib}/**/*")
