@@ -2,7 +2,7 @@ require 'sinatra'
 require 'json/pure'
 require 'uri'
 require 'amqp'
-require 'cfruntime'
+require 'cf-runtime'
 
 get '/env' do
   ENV['VMC_SERVICES']

@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/postgres'
+require 'cf-runtime/postgres'
 
 describe 'CFRuntime::PGClient' do
 

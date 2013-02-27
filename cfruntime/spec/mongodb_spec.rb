@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/mongodb'
+require 'cf-runtime/mongodb'
 
 describe 'CFRuntime::MongoClient' do
 

@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/aws_s3'
+require 'cf-runtime/aws_s3'
 
 describe 'CFRuntime::AWSS3Client' do
 

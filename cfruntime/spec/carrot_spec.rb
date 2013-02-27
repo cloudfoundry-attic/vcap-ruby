@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/carrot'
+require 'cf-runtime/carrot'
 
 describe 'CFRuntime::CarrotClient' do
 

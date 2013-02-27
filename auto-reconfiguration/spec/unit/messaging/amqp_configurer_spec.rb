@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'amqp'
-require 'cfautoconfig/messaging/amqp_configurer'
-require 'cfruntime/properties.rb'
+require 'cf-autoconfig/messaging/amqp_configurer'
+require 'cf-runtime/properties.rb'
 
 describe 'AutoReconfiguration::AMQP' do
 
@@ -80,7 +80,7 @@ describe 'AutoReconfiguration::AMQP' do
   end
 
   it 'does not open AMQP class to apply methods twice' do
-     load 'cfautoconfig/messaging/amqp_configurer.rb'
+     load 'cf-autoconfig/messaging/amqp_configurer.rb'
      #This would blow up massively (stack trace too deep) if we
      #aliased the connect methods twice
      mock_client = mock("client")
@@ -93,7 +93,7 @@ describe 'AutoReconfiguration::AMQP' do
 
   it 'disables AMQP auto-reconfig if DISABLE_AUTO_CONFIG includes rabbitmq' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:rabbitmq:mongodb"
-    load 'cfautoconfig/messaging/amqp_configurer.rb'
+    load 'cf-autoconfig/messaging/amqp_configurer.rb'
     mock_client = mock("client")
     AMQP.client = mock_client
     mock_client.should_receive(:connect).with(:scheme=>"amqp", :user=>"testuser", :pass=>"testpass",

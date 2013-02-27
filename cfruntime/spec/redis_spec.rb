@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/redis'
+require 'cf-runtime/redis'
 
 describe 'CFRuntime::RedisClient' do
 

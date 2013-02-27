@@ -1,6 +1,6 @@
 require 'mysql2'
 require File.join(File.dirname(__FILE__), '../../','spec_helper')
-require 'cfautoconfig/relational/mysql_configurer'
+require 'cf-autoconfig/relational/mysql_configurer'
 
 describe 'AutoReconfiguration::Mysql' do
 
@@ -82,7 +82,7 @@ describe 'AutoReconfiguration::Mysql' do
 
   it 'disables Mysql auto-reconfig if DISABLE_AUTO_CONFIG includes mysql' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:mysql:mongodb"
-    load 'cfautoconfig/relational/mysql_configurer.rb'
+    load 'cf-autoconfig/relational/mysql_configurer.rb'
     module Mysql2
       class Client
         def connect user, pass, host, port, database, socket, flags

@@ -1,5 +1,5 @@
 require File.join(File.dirname(__FILE__), '../','spec_helper')
-require 'cfautoconfig/configuration_helper'
+require 'cf-autoconfig/configuration_helper'
 
 describe 'AutoReconfiguration::ConfigurationHelper' do
 

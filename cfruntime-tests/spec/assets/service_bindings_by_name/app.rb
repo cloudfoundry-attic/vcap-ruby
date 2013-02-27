@@ -7,7 +7,7 @@ require 'carrot'
 require 'uri'
 require 'pg'
 require 'aws/s3'
-require 'cfruntime'
+require 'cf-runtime'
 
 get '/env' do
   ENV['VMC_SERVICES']

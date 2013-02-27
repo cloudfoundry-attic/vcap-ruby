@@ -8,7 +8,7 @@ deployment to multiple clouds.
 
 == What is this component
 
-The vcap-ruby repo contains the auto-reconfiguration and cfruntime modules.  cf-runtime is a client library that makes it easier to connect to Cloud Foundry services from your Ruby applications.  The auto-reconfiguration module is used internally by the Cloud Foundry staging plugins to automatically connect Ruby and Sinatra applications to Cloud Foundry services.
+The vcap-ruby repo contains the auto-reconfiguration and cf-runtime modules.  cf-runtime is a client library that makes it easier to connect to Cloud Foundry services from your Ruby applications.  The auto-reconfiguration module is used internally by the Cloud Foundry staging plugins to automatically connect Ruby and Sinatra applications to Cloud Foundry services.
 
 == License
 

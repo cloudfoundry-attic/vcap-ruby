@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/properties'
+require 'cf-runtime/properties'
 
 describe 'CFRuntime::DefaultParser' do
   it 'returns the specified service info with symbolized map keys' do

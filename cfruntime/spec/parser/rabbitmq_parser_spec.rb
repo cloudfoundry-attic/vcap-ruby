@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/properties'
+require 'cf-runtime/properties'
 
 describe 'CFRuntime::RabbitmqParser' do
   it 'parses a rabbitmq service (old format)' do

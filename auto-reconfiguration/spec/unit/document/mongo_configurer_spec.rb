@@ -1,6 +1,6 @@
 File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'mongo'
-require 'cfautoconfig/document/mongodb_configurer'
+require 'cf-autoconfig/document/mongodb_configurer'
 
 describe 'AutoReconfiguration::Mongo' do
 
@@ -155,7 +155,7 @@ describe 'AutoReconfiguration::Mongo' do
 
   it 'disables Mongo auto-reconfig if DISABLE_AUTO_CONFIG includes mongodb' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:mongodb"
-    load 'cfautoconfig/document/mongodb_configurer.rb'
+    load 'cf-autoconfig/document/mongodb_configurer.rb'
     mongo = Mongo::Connection.new('127.0.0.1', 27017, {:connect => false})
     mongo.host_to_try.should == mongo.send(:format_pair, '127.0.0.1', 27017)
   end

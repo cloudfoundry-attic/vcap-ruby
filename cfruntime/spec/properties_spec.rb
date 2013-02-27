@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/properties'
+require 'cf-runtime/properties'
 
 describe 'CFRuntime::CloudApp' do
 

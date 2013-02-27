@@ -1,0 +1,7 @@
+require "cf-runtime/parser/blob_parser"
+require "cf-runtime/parser/default_parser"
+require "cf-runtime/parser/mongodb_parser"
+require "cf-runtime/parser/mysql_parser"
+require "cf-runtime/parser/postgresql_parser"
+require "cf-runtime/parser/rabbitmq_parser"
+require "cf-runtime/parser/redis_parser"

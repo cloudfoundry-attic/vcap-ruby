@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'redis'
-require 'cfautoconfig/keyvalue/redis_configurer'
-require 'cfruntime/properties.rb'
+require 'cf-autoconfig/keyvalue/redis_configurer'
+require 'cf-runtime/properties.rb'
 
 describe 'AutoReconfiguration::Redis' do
 
@@ -56,7 +56,7 @@ describe 'AutoReconfiguration::Redis' do
   end
 
   it 'does not open Redis class to apply methods twice' do
-    load 'cfautoconfig/keyvalue/redis_configurer.rb'
+    load 'cf-autoconfig/keyvalue/redis_configurer.rb'
     #This would blow up massively (stack trace too deep) if we
     #aliased initialize twice
     redis = Redis.new(:host => '127.0.0.1',
@@ -69,7 +69,7 @@ describe 'AutoReconfiguration::Redis' do
 
   it 'disables Redis auto-reconfig if DISABLE_AUTO_CONFIG includes redis' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:mongodb"
-    load 'cfautoconfig/keyvalue/redis_configurer.rb'
+    load 'cf-autoconfig/keyvalue/redis_configurer.rb'
     redis = Redis.new(:host => '127.0.0.1',
                                 :port => '6321',
                                 :password => 'mypw')

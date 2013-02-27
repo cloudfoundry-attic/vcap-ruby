@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/properties'
+require 'cf-runtime/properties'
 
 describe 'CFRuntime::MongoParser' do
   it 'parses a mongo service without a URL (old format)' do

@@ -1,6 +1,6 @@
 require 'pg'
 require File.join(File.dirname(__FILE__), '../../','spec_helper')
-require 'cfautoconfig/relational/postgres_configurer'
+require 'cf-autoconfig/relational/postgres_configurer'
 
 describe 'AutoReconfiguration::Postgres' do
 
@@ -74,7 +74,7 @@ describe 'AutoReconfiguration::Postgres' do
   end
 
   it 'does not open PGconn class to apply methods twice' do
-     load 'cfautoconfig/relational/postgres_configurer.rb'
+     load 'cf-autoconfig/relational/postgres_configurer.rb'
      #This would blow up massively (stack trace too deep) if we
      #aliased the connect,open, or connect_start methods twice
      expected_conn_string= attempt_pg_connect_start('localhost','5689', {:foo=>'bar'},nil,'testdb','testuser','testpw',:connect_timeout=>1)
@@ -87,7 +87,7 @@ describe 'AutoReconfiguration::Postgres' do
 
   it 'disables Postgres auto-reconfig if DISABLE_AUTO_CONFIG includes postgresql' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:postgresql:mongodb"
-    load 'cfautoconfig/relational/postgres_configurer.rb'
+    load 'cf-autoconfig/relational/postgres_configurer.rb'
     expected_conn_string=attempt_pg_open("host=localhost port=8552 user=testuser connect_timeout=1")
     expected_conn_string.should == ""
   end

@@ -4,7 +4,7 @@ A library for interacting with Cloud Foundry services.  Provides methods for obt
 
 _Copyright (c) 2011-2012 VMware, Inc. Please see the LICENSE file._
 
-require 'cfruntime'
+require 'cf-runtime'
 
 #Connect to mysql service named 'mysql-test'
 client = CFRuntime::Mysql2Client.create_from_svc 'mysql-test'

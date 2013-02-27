@@ -1,7 +1,7 @@
 require File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'carrot'
-require 'cfautoconfig/messaging/carrot_configurer'
-require 'cfruntime/properties.rb'
+require 'cf-autoconfig/messaging/carrot_configurer'
+require 'cf-runtime/properties.rb'
 
 describe 'AutoReconfiguration::Carrot' do
 
@@ -48,7 +48,7 @@ describe 'AutoReconfiguration::Carrot' do
   end
 
   it 'does not open Carrot class to apply methods twice' do
-     load 'cfautoconfig/messaging/carrot_configurer.rb'
+     load 'cf-autoconfig/messaging/carrot_configurer.rb'
      #This would blow up massively (stack trace too deep) if we
      #aliased the connect methods twice
      carrot = Carrot.new({:host => '127.0.0.1', :port =>1234, :user=>'testuser',
@@ -59,7 +59,7 @@ describe 'AutoReconfiguration::Carrot' do
 
   it 'disables Carrot auto-reconfig if DISABLE_AUTO_CONFIG includes rabbitmq' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:rabbitmq:mongodb"
-    load 'cfautoconfig/messaging/carrot_configurer.rb'
+    load 'cf-autoconfig/messaging/carrot_configurer.rb'
     carrot = Carrot.new({:host => '127.0.0.1', :port =>1234, :user=>'testuser',
       :pass=>'testpass', :vhost=>'testvhost'})
     carrot.instance_variable_get("@opts").should == {  :host => '127.0.0.1', :port =>1234, :user=>'testuser',

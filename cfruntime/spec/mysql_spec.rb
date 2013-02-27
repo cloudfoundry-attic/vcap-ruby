@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/mysql'
+require 'cf-runtime/mysql'
 
 describe 'CFRuntime::Mysql2Client' do
 

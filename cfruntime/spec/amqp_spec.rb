@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'cfruntime/amqp'
+require 'cf-runtime/amqp'
 
 describe 'CFRuntime::AMQPClient' do
 

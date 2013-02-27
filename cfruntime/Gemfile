@@ -1,4 +1,4 @@
 source "http://rubygems.org"
 
-# Specify your gem's dependencies in cfruntime.gemspec
+# Specify your gem's dependencies in cf-runtime.gemspec
 gemspec

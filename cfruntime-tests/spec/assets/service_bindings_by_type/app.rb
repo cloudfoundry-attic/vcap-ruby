@@ -6,7 +6,7 @@ require 'mysql2'
 require 'carrot'
 require 'uri'
 require 'pg'
-require 'cfruntime'
+require 'cf-runtime'
 require 'aws/s3'
 
 get '/env' do

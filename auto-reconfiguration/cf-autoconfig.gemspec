@@ -1,7 +1,7 @@
 
 $:.unshift File.expand_path("../lib", __FILE__)
 
-require 'cfautoconfig/version'
+require 'cf-autoconfig/version'
 
 spec = Gem::Specification.new do |s|
   s.name = "cf-autoconfig"
@@ -15,7 +15,7 @@ spec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["LICENSE"]
   s.rdoc_options = ["-N", "--tab-width=2", "--exclude='cf-autoconfig.gemspec|spec'"]
 
-  s.add_dependency "cf-runtime", "= 0.1.1"
+  s.add_dependency "cf-runtime", "= 0.2.0"
 
   s.add_development_dependency "redis",     "~> 2.0"
   s.add_development_dependency "amqp",      "~> 0.8"

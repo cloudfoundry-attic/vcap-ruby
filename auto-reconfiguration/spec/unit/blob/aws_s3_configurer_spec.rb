@@ -1,6 +1,6 @@
 require File.join(File.dirname(__FILE__), '../../','spec_helper')
 require 'aws/s3'
-require 'cfautoconfig/blob/aws_s3_configurer'
+require 'cf-autoconfig/blob/aws_s3_configurer'
 
 describe 'AutoReconfiguration::AwsS3' do
 
@@ -61,7 +61,7 @@ describe 'AutoReconfiguration::AwsS3' do
   end
 
   it 'does not open Connection class to apply methods twice' do
-    load 'cfautoconfig/blob/aws_s3_configurer.rb'
+    load 'cf-autoconfig/blob/aws_s3_configurer.rb'
     #This would blow up massively (stack trace too deep) if we
     #aliased connect twice
     AWS::S3::Base.establish_connection!(
@@ -74,7 +74,7 @@ describe 'AutoReconfiguration::AwsS3' do
 
   it 'disables Blob auto-reconfig if DISABLE_AUTO_CONFIG includes blob' do
     ENV['DISABLE_AUTO_CONFIG'] = "redis:blob:mongodb"
-    load 'cfautoconfig/blob/aws_s3_configurer.rb'
+    load 'cf-autoconfig/blob/aws_s3_configurer.rb'
     AWS::S3::Base.establish_connection!(
       :access_key_id      => "myid",
       :secret_access_key  => "mykey",
