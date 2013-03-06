@@ -123,7 +123,7 @@ def load_mongo
 end
 
 def load_postgresql
-  client = CFRuntime::PGClient.create_from_svc('test-cfruntime-svc-test-postgres')
+  client = CFRuntime::PGClient.create_from_svc('test-cfruntime-svc-test-postgresql')
   client.query("create table data_values (id varchar(20), data_value varchar(20));") if client.query("select * from information_schema.tables where table_name = 'data_values';").first.nil?
   client
 end

@@ -9,7 +9,7 @@ namespace "bundler" do
       puts "Packaging #{asset}"
       Dir.chdir(asset) do
         sh("rm -rf vendor")
-        sh("bundle install && bundle package")
+        sh("bundle package")
       end
     }
   end

@@ -16,12 +16,12 @@ not_found do
   'This is nowhere to be found.'
 end
 
-post '/service/amqp/:key' do
+post '/service/rabbit/:key' do
   value = request.env["rack.input"].read
   write_to_rabbit(params[:key], value)
 end
 
-get '/service/amqp/:key' do
+get '/service/rabbit/:key' do
   options.amqp_option_msg
 end
 
