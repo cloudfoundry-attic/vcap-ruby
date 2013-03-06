@@ -5,12 +5,11 @@ task "package" => ["bundler:package"]
 
 namespace "bundler" do
   task "package" do
-    Dir['*/'].map { |asset|
+    Dir['*/'].map do |asset|
       puts "Packaging #{asset}"
       Dir.chdir(asset) do
-        sh("rm -rf vendor")
-        sh("bundle package")
+        sh("BUNDLE_GEMFILE='./Gemfile' bundle install && bundle package")
       end
-    }
+    end
   end
 end
