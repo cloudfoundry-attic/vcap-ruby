@@ -3,21 +3,22 @@ require File.join(File.dirname(__FILE__), "spec_helper")
 describe "CFRuntime" do
   include CFRuntimeTests
 
-  after(:each) do
-    delete_services all_my_services
-  end
+  TEST_SERVICES = [:mysql, :redis, :mongodb, :rabbitmq, :postgresql, :blob]
 
   describe "connects an application to services by type" do
     before(:all) do
       login
       deploy_app("service_bindings_by_type")
+      TEST_SERVICES.each { |service_name| provision_service(service_name) }
+      start_app
     end
 
     after(:all) do
+      delete_services(all_my_services)
       delete_app
     end
 
-    [:mysql, :redis, :mongodb, :rabbitmq, :postgresql, :blob].each do |service_name|
+    TEST_SERVICES.each do |service_name|
       it "connects to #{service_name} by type" do
         verify_service(service_name)
       end
@@ -28,13 +29,16 @@ describe "CFRuntime" do
     before(:all) do
       login
       deploy_app("service_bindings_by_name")
+      TEST_SERVICES.each { |service_name| provision_service(service_name) }
+      start_app
     end
 
     after(:all) do
+      delete_services(all_my_services)
       delete_app
     end
 
-    [:mysql, :redis, :mongodb, :rabbitmq, :postgresql, :blob].each do |service_name|
+    TEST_SERVICES.each do |service_name|
       it "connects to #{service_name} by name" do
         verify_service(service_name)
       end
@@ -47,13 +51,16 @@ describe "CFRuntime" do
     before do
       login
       deploy_app("amqp_service_bindings_by_type")
+      provision_service(:rabbitmq)
+      start_app
     end
 
     after do
+      delete_services(all_my_services)
       delete_app
     end
 
-    it "connects to amqp by type" do
+    it "connects to rabbitmq by type" do
       verify_service(:rabbitmq)
     end
   end
@@ -64,13 +71,16 @@ describe "CFRuntime" do
     before do
       login
       deploy_app("amqp_service_bindings_by_name")
+      provision_service(:rabbitmq)
+      start_app
     end
 
     after do
+      delete_services(all_my_services)
       delete_app
     end
 
-    it "connects to amqp by name" do
+    it "connects to rabbitmq by name" do
       verify_service(:rabbitmq)
     end
   end

@@ -166,12 +166,12 @@ module CFRuntimeTests
     nil
   end
 
-  def provision_service(app_name, service_name)
+  def provision_service(service_name)
+    return unless service_available?(service_name)
     label = "test-#{app_name}-#{SERVICE_NAMES[service_name]}"
     @client.create_service(service_name, label)
     service_manifest = service_manifest(service_name, label)
     attach_provisioned_service(service_manifest)
-    restart_app
   end
 
   def mysql_service_manifest
@@ -272,8 +272,6 @@ module CFRuntimeTests
 
   def verify_service(service_name)
     pending "Service #{service_name} is not available on #{target}" unless service_available?(service_name)
-
-    provision_service(app_name, service_name)
 
     service_key = SERVICE_NAMES[service_name]
     if service_name == :blob
