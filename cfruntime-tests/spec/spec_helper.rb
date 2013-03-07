@@ -1,5 +1,4 @@
-require 'vmc'
-require 'cli'
+require 'cfoundry'
 require 'curb'
 module CFRuntimeTests
 
@@ -22,8 +21,9 @@ module CFRuntimeTests
   def login
     target_url = "http://#{target}"
     puts "Running tests on #{target_url} on behalf of #{test_user}"
-    @client = VMC::Client.new(target_url)
+    @client = CFoundry::Client.new(target_url)
     @client.login(test_user, test_pwd)
+    select_org_and_space if v2?
   end
 
   def test_user
@@ -38,7 +38,15 @@ module CFRuntimeTests
     ENV['VCAP_TARGET'] || "api.cloudfoundry.com"
   end
 
-  def domain
+  def organization
+    ENV['VCAP_ORG'] || raise("Provide organization name in VCAP_ORG")
+  end
+
+  def space
+    ENV['VCAP_SPACE'] || raise("Provide space name in VCAP_SPACE")
+  end
+
+  def domain_name
     target.split(".")[1..-1].join(".")
   end
 
@@ -47,85 +55,90 @@ module CFRuntimeTests
   end
 
   def app_uri
-    "#{app_name}.#{domain}"
+    "#{app_name}.#{domain_name}"
+  end
+
+  def v2?
+    @client.is_a?(CFoundry::V2::Client)
+  end
+
+  def select_org_and_space
+    @client.current_organization = @client.organization_by_name(organization)
+    @client.current_space = @client.current_organization.space_by_name(space)
   end
 
   def system_services
     login unless @client
-    @system_services ||= @client.services_info
+    @system_services ||= @client.services
   end
 
   def service_available?(name)
-    system_services.each do |_, services|
-      services.each do |service_name, _|
-        return true if service_name == name
-      end
-    end
-    false
+    !!system_service(name)
   end
 
-  def create_app(framework='sinatra', runtime='ruby18', instances=1, memory=64)
+  def system_service(name)
+    system_services.find { |s| s.label == name.to_s && s.provider == "core" }
+  end
+
+  def create_app(framework='sinatra', runtime='ruby18', instances=1, memory=256)
     delete_app
-    manifest = {
-      :name => "#{app_name}",
-      :staging => {
-      :framework => framework,
-      :runtime => runtime
-      },
-      :resources=> {
-        :memory => memory
-      },
-      :uris => [app_uri],
-      :instances => "#{instances}",
-    }
-    response = @client.create_app(app_name, manifest)
-    if response.first == 400
-      puts "Creation of app #{app_name} failed"
+    @app = @client.app
+    @app.name = app_name
+    @app.space = @client.current_space if v2?
+    @app.total_instances = instances
+    @app.command = "bundle exec ruby app.rb -p $PORT"
+    @app.memory = memory
+
+    unless v2?
+      @app.framework = framework
+      @app.runtime = runtime
+    end
+
+    @app.create!
+    map_url
+  end
+
+  def map_url
+    if v2?
+      domain = @client.current_space.domain_by_name(domain_name)
+      route = @client.routes_by_host(app_name, :depth => 0).find do |r|
+        r.domain == domain
+      end
+      unless route
+        route = @client.route
+        route.host = app_name
+        route.domain = domain
+        route.space = @client.current_space
+        route.create!
+      end
+      @app.add_route(route)
+    else
+      @app.urls << app_uri
+      @app.update!
     end
   end
 
   def delete_app
-    @client.delete_app(app_name)
-  rescue
-    nil
+    return unless @client
+    return unless @client.app_by_name(app_name)
+    app = @client.app_by_name(app_name)
+    if v2?
+      app.routes.each do |route|
+        route.delete!
+      end
+    end
+    app.delete!
   end
 
-  def upload_app(app_dir)
-    upload_file, file = "#{Dir.tmpdir}/#{app_name}.zip", nil
-    FileUtils.rm_f(upload_file)
-    explode_dir = "#{Dir.tmpdir}/.vmc_#{app_name}_files"
-    FileUtils.rm_rf(explode_dir) # Make sure we didn't have anything left over..
-    Dir.chdir(app_dir) do
-      FileUtils.mkdir(explode_dir)
-      files = Dir.glob('{*,.[^\.]*}')
-      # Do not process .git files
-      files.delete('.git') if files
-      FileUtils.cp_r(files, explode_dir)
-      unless VMC::Cli::ZipUtil.get_files_to_pack(explode_dir).empty?
-        VMC::Cli::ZipUtil.pack(explode_dir, upload_file)
-        file = File.open(upload_file, 'rb')
-      end
-      @client.upload_app(app_name, file)
-    end
-  ensure
-    # Cleanup if we created an exploded directory.
-    FileUtils.rm_f(upload_file) if upload_file
-    FileUtils.rm_rf(explode_dir) if explode_dir
+  def upload_app(app_path)
+    @app.upload(app_path)
   end
 
   def start_app
-    app_manifest = get_app_status
-    if app_manifest == nil
-      raise "Application #{app_name} does not exist, app needs to be created."
-    end
-    if app_manifest[:state] == 'STARTED'
-      return
-    end
-    app_manifest[:state] = 'STARTED'
-    response = @client.update_app(app_name, app_manifest)
-    raise "Problem starting application #{app_name}." if response.first != 200
-    expected_health = 1.0
-    health = poll_until_done(expected_health)
+    puts "Starting application (please wait)"
+    @app.start!
+    expected_health = "RUNNING"
+    health = poll_until_done
     health.should == expected_health
   end
 
@@ -146,32 +159,33 @@ module CFRuntimeTests
     start_app
   end
 
-  def poll_until_done(expected_health)
+  def poll_until_done
     secs_til_timeout = 60
-    health = nil
     sleep_time = 1
-    while secs_til_timeout > 0 && health != expected_health
+    while secs_til_timeout > 0 && !@app.healthy?
       sleep sleep_time
       secs_til_timeout = secs_til_timeout - sleep_time
-      status = get_app_status
-      runningInstances = status[:runningInstances] || 0
-      health = runningInstances/status[:instances].to_f
     end
-    health
+    @app.health
   end
 
   def get_app_status
-    @client.app_info(app_name)
-  rescue
-    nil
+    @app && @app.state
   end
 
-  def provision_service(service_name)
-    return unless service_available?(service_name)
-    label = "test-#{app_name}-#{SERVICE_NAMES[service_name]}"
-    @client.create_service(service_name, label)
-    service_manifest = service_manifest(service_name, label)
-    attach_provisioned_service(service_manifest)
+  def provision_service(service_type, prefix)
+    return unless service_available?(service_type)
+    service_instance = @client.service_instance
+    service_instance.name = "#{prefix}-#{app_name}-#{SERVICE_NAMES[service_type]}"
+    if v2?
+      service_instance.space = @client.current_space
+      service_instance.service_plan = system_service(service_type).service_plans.first
+    else
+      service_instance.vendor = service_type
+    end
+    service_instance.create!
+    attach_provisioned_service(service_instance)
+    sleep 1 # Wait for service to start
   end
 
   def mysql_service_manifest
@@ -245,29 +259,16 @@ module CFRuntimeTests
     manifests[service_name].merge(:name => name)
   end
 
-  def attach_provisioned_service(service_manifest)
-    app_manifest = get_app_status
-    provisioned_services = app_manifest[:services] || []
-
-    provisioned_services << service_manifest[:name]
-    app_manifest[:services] = provisioned_services
-    @client.update_app(app_name, app_manifest)
+  def attach_provisioned_service(service_instance)
+    @app.bind(service_instance)
   end
 
-  def all_my_services
-    @client.services.map{ |service| service[:name] }
-  end
-
-  def delete_services(services)
-    services.each do |service|
-      delete_service service
+  def delete_services
+    @client.current_space.service_instances.each do |service|
+      service.delete!
     end
-  end
-
-  def delete_service(service)
-    @client.delete_service(service)
-  rescue
-    nil
+  rescue CFoundry::NotFound
+    # Service was already removed
   end
 
   def verify_service(service_name)

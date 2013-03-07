@@ -27,7 +27,7 @@ end
 
 def write_to_rabbit(key, value)
   EventMachine.run do
-    connection = CFRuntime::AMQPClient.create_from_svc('test-cfruntime-svc-test-rabbit')
+    connection = CFRuntime::AMQPClient.create_from_svc('amqp-name-cfruntime-svc-test-rabbit')
     channel  = AMQP::Channel.new(connection)
     queue    = channel.queue(key, :auto_delete => true)
     exchange = channel.default_exchange

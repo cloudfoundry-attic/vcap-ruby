@@ -107,33 +107,33 @@ get '/service/blob/:bucket/:object' do
 end
 
 def load_redis
-  CFRuntime::RedisClient.create_from_svc('test-cfruntime-svc-test-redis')
+  CFRuntime::RedisClient.create_from_svc('test-name-cfruntime-svc-test-redis')
 end
 
 def load_mysql
-  client = CFRuntime::Mysql2Client.create_from_svc('test-cfruntime-svc-test-mysql')
+  client = CFRuntime::Mysql2Client.create_from_svc('test-name-cfruntime-svc-test-mysql')
   result = client.query("SELECT table_name FROM information_schema.tables WHERE table_name = 'data_values'");
   client.query("Create table IF NOT EXISTS data_values ( id varchar(20), data_value varchar(20)); ") if result.count != 1
   client
 end
 
 def load_mongo
-  db = CFRuntime::MongoClient.create_from_svc('test-cfruntime-svc-test-mongo').db
+  db = CFRuntime::MongoClient.create_from_svc('test-name-cfruntime-svc-test-mongo').db
   coll = db['data_values']
 end
 
 def load_postgresql
-  client = CFRuntime::PGClient.create_from_svc('test-cfruntime-svc-test-postgresql')
+  client = CFRuntime::PGClient.create_from_svc('test-name-cfruntime-svc-test-postgresql')
   client.query("create table data_values (id varchar(20), data_value varchar(20));") if client.query("select * from information_schema.tables where table_name = 'data_values';").first.nil?
   client
 end
 
 def load_blob
-  CFRuntime::AWSS3Client.create_from_svc('test-cfruntime-svc-test-blob')
+  CFRuntime::AWSS3Client.create_from_svc('test-name-cfruntime-svc-test-blob')
 end
 
 def rabbit_service
-  CFRuntime::CarrotClient.create_from_svc('test-cfruntime-svc-test-rabbit')
+  CFRuntime::CarrotClient.create_from_svc('test-name-cfruntime-svc-test-rabbit')
 end
 
 def write_to_rabbit(key, value, client)

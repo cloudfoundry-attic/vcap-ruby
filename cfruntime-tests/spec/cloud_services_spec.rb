@@ -8,14 +8,16 @@ describe "CFRuntime" do
   describe "connects an application to services by type" do
     before(:all) do
       login
+      delete_app
+      delete_services
       deploy_app("service_bindings_by_type")
-      TEST_SERVICES.each { |service_name| provision_service(service_name) }
+      TEST_SERVICES.each { |service_name| provision_service(service_name, "test-type") }
       start_app
     end
 
     after(:all) do
-      delete_services(all_my_services)
       delete_app
+      delete_services
     end
 
     TEST_SERVICES.each do |service_name|
@@ -28,14 +30,15 @@ describe "CFRuntime" do
   describe "connects an application to services by name" do
     before(:all) do
       login
+      delete_services
       deploy_app("service_bindings_by_name")
-      TEST_SERVICES.each { |service_name| provision_service(service_name) }
+      TEST_SERVICES.each { |service_name| provision_service(service_name, "test-name") }
       start_app
     end
 
     after(:all) do
-      delete_services(all_my_services)
       delete_app
+      delete_services
     end
 
     TEST_SERVICES.each do |service_name|
@@ -50,14 +53,15 @@ describe "CFRuntime" do
   describe "connects an application using AMQP to rabbit service by type" do
     before do
       login
+      delete_services
       deploy_app("amqp_service_bindings_by_type")
-      provision_service(:rabbitmq)
+      provision_service(:rabbitmq, "amqp-type")
       start_app
     end
 
     after do
-      delete_services(all_my_services)
       delete_app
+      delete_services
     end
 
     it "connects to rabbitmq by type" do
@@ -70,13 +74,14 @@ describe "CFRuntime" do
   describe "connects an application using AMQP to rabbit service by name" do
     before do
       login
+      delete_services
       deploy_app("amqp_service_bindings_by_name")
-      provision_service(:rabbitmq)
+      provision_service(:rabbitmq, "amqp-name")
       start_app
     end
 
     after do
-      delete_services(all_my_services)
+      delete_services
       delete_app
     end
 
