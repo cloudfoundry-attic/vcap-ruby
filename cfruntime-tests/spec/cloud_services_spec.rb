@@ -87,6 +87,7 @@ describe "CFRuntime" do
 
     it "connects to rabbitmq by name" do
       verify_service(:rabbitmq)
+      delete_services
     end
   end
 end
