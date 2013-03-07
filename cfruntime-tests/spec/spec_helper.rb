@@ -90,8 +90,8 @@ module CFRuntimeTests
     @app.memory = memory
 
     unless v2?
-      @app.framework = framework
-      @app.runtime = runtime
+      @app.framework = @client.framework_by_name(framework)
+      @app.runtime = @client.runtime_by_name(runtime)
     end
 
     @app.create!
@@ -177,11 +177,14 @@ module CFRuntimeTests
     return unless service_available?(service_type)
     service_instance = @client.service_instance
     service_instance.name = "#{prefix}-#{app_name}-#{SERVICE_NAMES[service_type]}"
+    system_service = system_service(service_type)
     if v2?
       service_instance.space = @client.current_space
-      service_instance.service_plan = system_service(service_type).service_plans.first
+      service_instance.service_plan = system_service.service_plans.first
     else
-      service_instance.vendor = service_type
+      service_instance.vendor = system_service.label
+      service_instance.tier = "free"
+      service_instance.version = system_service.version
     end
     service_instance.create!
     attach_provisioned_service(service_instance)
@@ -264,7 +267,8 @@ module CFRuntimeTests
   end
 
   def delete_services
-    @client.current_space.service_instances.each do |service|
+    services = v2? ? @client.current_space.service_instances : @client.service_instances
+    services.each do |service|
       service.delete!
     end
   rescue CFoundry::NotFound
