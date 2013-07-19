@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["-N", "--tab-width=2", "--exclude='cf-runtime.gemspec|spec'"]
 
   s.add_development_dependency "redis",     "~> 2.0"
+  s.add_development_dependency "dalli",     "~> 2.6.4"
   s.add_development_dependency "amqp",      "~> 0.8"
   s.add_development_dependency "carrot",    "~> 1.0"
   s.add_development_dependency "mongo",     "~> 1.2.0"
