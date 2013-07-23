@@ -2,9 +2,10 @@ require 'rake'
 require 'rspec'
 require 'rspec/core/rake_task'
 require 'ci/reporter/rake/rspec'
+require 'fileutils'
 
 desc "Run specs"
-task "spec" => ["test:package","test:spec"]
+task "spec" => ["test:package","test:prepare","test:spec"]
 
 desc "Run specs producing results for CI"
 task "ci" => ["ci:spec"]
@@ -17,8 +18,23 @@ namespace "test" do
     end
   end
 
+  task "prepare" do |t|
+    gem_path = ""
+    Dir.chdir('../cfruntime') do
+      puts "Building cf-runtime from source"
+      gem = `gem build cf-runtime.gemspec | tail -n 1 | awk '{ print $2; }'`.chop
+      gem_path = File.expand_path(gem)
+    end
+    Dir.chdir('spec/assets') do
+      sh("rake gems:inject[#{gem_path}]")    
+      FileUtils.rm gem_path
+    end
+  end
+
   task "package" do |t|
-   sh("cd spec/assets && rake package && cd ../../")
+    Dir.chdir('spec/assets') do
+      sh("rake package")    
+    end
  end
 end
 

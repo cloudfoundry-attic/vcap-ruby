@@ -13,3 +13,14 @@ namespace "bundler" do
     end
   end
 end
+
+namespace "gems" do
+  task "inject", :gem_path do |t, args|
+    Dir['*/'].map do |asset|
+      gem_path = args[:gem_path]
+      target_dir = File.join(asset, 'vendor/cache')
+      puts "Injecting #{File.basename(gem_path)} in #{target_dir}"
+      FileUtils.cp gem_path, target_dir
+    end
+  end
+end

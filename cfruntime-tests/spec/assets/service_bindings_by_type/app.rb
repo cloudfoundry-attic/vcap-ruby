@@ -8,6 +8,7 @@ require 'uri'
 require 'pg'
 require 'cf-runtime'
 require 'aws/s3'
+require 'dalli'
 
 get '/env' do
   ENV['VMC_SERVICES']
@@ -25,6 +26,18 @@ end
 post '/service/redis/:key' do
   redis = load_redis
   redis[params[:key]] = request.env["rack.input"].read
+end
+
+get '/service/memcached/:key' do
+  client = load_memcached
+  client.get params[:key]
+end
+
+post '/service/memcached/:key' do
+  value = request.env["rack.input"].read
+  client = load_memcached
+  client.set(params[:key], value)
+  value
 end
 
 post '/service/mongo/:key' do
@@ -108,6 +121,10 @@ end
 
 def load_redis
   CFRuntime::RedisClient.create
+end
+
+def load_memcached
+  CFRuntime::DalliClient.create
 end
 
 def load_mysql

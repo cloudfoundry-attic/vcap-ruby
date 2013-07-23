@@ -3,7 +3,7 @@ require File.join(File.dirname(__FILE__), "spec_helper")
 describe "CFRuntime" do
   include CFRuntimeTests
 
-  TEST_SERVICES = [:mysql, :redis, :mongodb, :rabbitmq, :postgresql, :blob]
+  TEST_SERVICES = [:mysql, :redis, :mongodb, :rabbitmq, :postgresql, :blob, :memcached]
 
   describe "connects an application to services by type" do
     before(:all) do
