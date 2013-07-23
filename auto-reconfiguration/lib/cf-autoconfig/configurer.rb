@@ -5,6 +5,11 @@ if CFRuntime::CloudApp.service_props('redis')
   require 'cf-autoconfig/keyvalue/redis_configurer'
 end
 
+if CFRuntime::CloudApp.service_props('memcached')
+  puts "Loading Memcached auto-reconfiguration."
+  require 'cf-autoconfig/keyvalue/dalli_configurer'
+end
+
 if CFRuntime::CloudApp.service_props('mongodb')
   puts "Loading MongoDB auto-reconfiguration."
   require 'cf-autoconfig/document/mongodb_configurer'
