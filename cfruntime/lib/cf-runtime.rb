@@ -7,6 +7,10 @@ begin
 rescue LoadError
 end
 begin
+  require 'cf-runtime/dalli'
+rescue LoadError
+end
+begin
   require 'cf-runtime/mongodb'
 rescue LoadError
 end

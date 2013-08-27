@@ -49,6 +49,10 @@ module ServiceSpecHelpers
     "2.2"
   end
 
+  def memcached_version
+    "1.4"
+  end
+
   def rabbit_version
     "2.4"
   end
@@ -84,6 +88,13 @@ module ServiceSpecHelpers
 
   def create_redis_service(name)
     create_service(name, "redis", redis_version, "redisdata")
+  end
+
+  def create_memcached_service(name)
+    svc = "{\"name\":\"#{name}\",\"label\":\"memcached-#{memcached_version}\",\"plan\":\"100\"," +
+      "\"credentials\":{\"hostname\":\"#{SOME_SERVER}\"," +
+      "\"host\":\"#{SOME_SERVER}\",\"port\":#{SOME_SERVICE_PORT},\"user\":\"testuser\",\"password\":\"testpw\"" +
+      "}}"
   end
 
   def create_mysql_service(name)

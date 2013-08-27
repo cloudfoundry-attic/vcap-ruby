@@ -4,6 +4,7 @@ module CFRuntimeTests
 
   SERVICE_NAMES = {
     :redis => "redis",
+    :memcached => "memcached",
     :mongodb => "mongo",
     :mysql => "mysql",
     :postgresql => "postgresql",
@@ -21,8 +22,8 @@ module CFRuntimeTests
   def login
     target_url = "http://#{target}"
     puts "Running tests on #{target_url} on behalf of #{test_user}"
-    @client = CFoundry::Client.new(target_url)
-    @client.login(test_user, test_pwd)
+    @client = CFoundry::Client.get(target_url)
+    @client.login(username: test_user, password: test_pwd)
     select_org_and_space if v2?
   end
 
@@ -210,6 +211,15 @@ module CFRuntimeTests
     }
   end
 
+  def memcached_service_manifest
+    {
+      :type=>"key-value",
+      :vendor=>"memcached",
+      :tier=>"free",
+      :version=>"1.4",
+    }
+  end
+
   def mongo_service_manifest
     {
       :type=>"key-value",
@@ -252,6 +262,7 @@ module CFRuntimeTests
   def service_manifest(service_name, name)
     manifests = {
       :redis => redis_service_manifest,
+      :memcached => memcached_service_manifest,
       :mongodb => mongo_service_manifest,
       :mysql => mysql_service_manifest,
       :postgresql => postgresql_service_manifest,

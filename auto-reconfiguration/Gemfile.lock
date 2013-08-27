@@ -2,11 +2,12 @@ PATH
   remote: .
   specs:
     cf-autoconfig (0.2.0)
+      cf-runtime (= 0.2.0)
 
 PATH
-  remote: ../cfruntime/
+  remote: ../cfruntime
   specs:
-    cf-runtime (0.1.1)
+    cf-runtime (0.2.0)
 
 GEM
   remote: http://rubygems.org/
@@ -28,6 +29,7 @@ GEM
     carrot (1.2.0)
     ci_reporter (1.6.9)
       builder (>= 2.1.2)
+    dalli (2.6.4)
     diff-lcs (1.1.3)
     eventmachine (0.12.10)
     mime-types (1.19)
@@ -62,8 +64,9 @@ DEPENDENCIES
   aws-s3 (~> 0.6.3)
   carrot (~> 1.0)
   cf-autoconfig!
-  cf-runtime (= 0.1.1)!
+  cf-runtime!
   ci_reporter (~> 1.6.5)
+  dalli (~> 2.6.4)
   mongo (~> 1.2.0)
   mysql2 (~> 0.2.7)
   pg (~> 0.11.0)

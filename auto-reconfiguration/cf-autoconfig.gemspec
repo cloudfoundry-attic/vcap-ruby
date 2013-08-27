@@ -18,6 +18,7 @@ spec = Gem::Specification.new do |s|
   s.add_dependency "cf-runtime", "= 0.2.0"
 
   s.add_development_dependency "redis",     "~> 2.0"
+  s.add_development_dependency "dalli",     "~> 2.6.4"
   s.add_development_dependency "amqp",      "~> 0.8"
   s.add_development_dependency "carrot",    "~> 1.0"
   s.add_development_dependency "mysql2",    "~> 0.2.7"
